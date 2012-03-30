@@ -14,7 +14,7 @@ SDL_Surface* screen;
 
 Uint8* keys;
 
-Particle* testParticle;
+std::vector<Particle*> particleList;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -50,7 +50,10 @@ int init()
 
 void updateLogic(Uint32 currTime)
 {
-	testParticle->update(currTime);
+	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
+	{
+		(*it)->update(currTime);
+	}
 }
 
 void draw()
@@ -59,10 +62,13 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glLoadIdentity();
-
+	
+	glColor3f(1.0f, 0.0f, 0.0f);
 	glBegin(GL_POINTS);
-	glColor3f(1.0f, 0.0f, 1.0f);
-	glVertex2f(testParticle->x, testParticle->y);
+	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
+	{
+		glVertex2f((*it)->x, (*it)->y);
+	}
 	glEnd();
 
 	SDL_GL_SwapBuffers();
@@ -105,13 +111,19 @@ int main (int argc, char* argv[])
 {
 	init();
 
-	testParticle = new Particle(20.0f, 100.0f, 2.0f);
-	testParticle->velocity.x = 10.0f;
-	testParticle->velocity.y = 0.0f;
-	testParticle->acceleration.y = 9.8f;
+	for (int i = 0; i < 500; i++)
+	{
+		Particle* testParticle = new Particle(320.0f, 240.0f, 2.0f);
+		testParticle->velocity.x = (rand() % 50) - 25;
+		testParticle->velocity.y = (rand() % 50) - 25;
+		
+		particleList.push_back(testParticle);
+	}
 
 	loop();
 	
+	particleList.clear();
+
 	deinit();
 	
 	return 0;
