@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cmath>
+#include <cstdlib>
 
 #include <GL/gl.h>
 
@@ -15,6 +16,12 @@ Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter)
 
 	acceleration.x = 0.0f;
 	acceleration.y = 0.0f;
+	
+	r = (rand() % 100) - 50;
+	g = (rand() % 100) - 50;
+	b = (rand() % 100) - 50;
+	
+	diameter = newDiameter;
 
 	lastUpdateTime = SDL_GetTicks();
 }

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
+#include <ctime>
 
 #include <SDL/SDL.h>
 #include <GL/glu.h>
@@ -30,6 +31,8 @@ int init()
 		perror("Error initalizing screen");
 		return 0;
 	}
+	
+	srand( time(NULL) );
 
 	SDL_WM_SetCaption("Particle System", NULL);
 	
@@ -41,9 +44,11 @@ int init()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_POINT_SMOOTH);
 	
 	glOrtho(0, 640, 480, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
+
 
 	return 1;
 }
@@ -62,14 +67,15 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glLoadIdentity();
-	
-	glColor3f(1.0f, 0.0f, 0.0f);
-	glBegin(GL_POINTS);
+
 	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
+		glPointSize((*it)->diameter);
+		glBegin(GL_POINTS);
+		glColor3f((*it)->r, (*it)->g, (*it)->b);
 		glVertex2f((*it)->x, (*it)->y);
+		glEnd();
 	}
-	glEnd();
 
 	SDL_GL_SwapBuffers();
 }
@@ -111,12 +117,13 @@ int main (int argc, char* argv[])
 {
 	init();
 
+	//easy firework
 	for (int i = 0; i < 500; i++)
 	{
-		Particle* testParticle = new Particle(320.0f, 240.0f, 2.0f);
-		testParticle->velocity.x = (rand() % 50) - 25;
-		testParticle->velocity.y = (rand() % 50) - 25;
-		
+		Particle* testParticle = new Particle(320.0f, 240.0f, rand() % 10);
+		testParticle->velocity.x = ((rand() % 100) - 50)*cos(i);
+		testParticle->velocity.y = ((rand() % 100) - 50)*sin(i);
+
 		particleList.push_back(testParticle);
 	}
 
