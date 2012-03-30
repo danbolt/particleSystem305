@@ -7,9 +7,14 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
+#include "vector.h"
+#include "Particle.h"
+
 SDL_Surface* screen;
 
 Uint8* keys;
+
+Particle* testParticle;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -43,6 +48,11 @@ int init()
 	return 1;
 }
 
+void updateLogic(Uint32 currTime)
+{
+	testParticle->update(currTime);
+}
+
 void draw()
 {
 	glClearColor(0.0,0.0,0.0,1.0);
@@ -50,11 +60,9 @@ void draw()
 	
 	glLoadIdentity();
 
-	glBegin(GL_QUADS);
-        glColor3f(1, 0, 0); glVertex3f(0, 0, 0);
-        glColor3f(1, 1, 0); glVertex3f(100, 0, 0);
-        glColor3f(1, 0, 1); glVertex3f(100, 100, 0);
-        glColor3f(1, 1, 1); glVertex3f(0, 100, 0);
+	glBegin(GL_POINTS);
+	glColor3f(1.0f, 0.0f, 1.0f);
+	glVertex2f(testParticle->x, testParticle->y);
 	glEnd();
 
 	SDL_GL_SwapBuffers();
@@ -76,7 +84,9 @@ void loop()
 		}
 		
 		keys = SDL_GetKeyState(NULL);
-		
+
+		updateLogic(SDL_GetTicks());
+
 		draw();
 	}
 
@@ -94,7 +104,12 @@ int deinit()
 int main (int argc, char* argv[])
 {
 	init();
-	
+
+	testParticle = new Particle(20.0f, 100.0f, 2.0f);
+	testParticle->velocity.x = 10.0f;
+	testParticle->velocity.y = 0.0f;
+	testParticle->acceleration.y = 9.8f;
+
 	loop();
 	
 	deinit();
