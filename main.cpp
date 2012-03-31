@@ -10,12 +10,15 @@
 
 #include "vector.h"
 #include "Particle.h"
+#include "Triangle.h"
 
 SDL_Surface* screen;
 
 Uint8* keys;
 
 std::vector<Particle*> particleList;
+
+Triangle* testTriangle;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -58,6 +61,17 @@ void updateLogic(Uint32 currTime)
 	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
 		(*it)->update(currTime);
+		
+		if (testTriangle->pointIntersect(*it))
+		{
+			(*it)->backstep(currTime);
+
+			p_vector newNormal(0,0);
+			testTriangle->getRelevantNormal((*it), newNormal);
+			
+			(*it)->velocity.x = 10*newNormal.x;
+			(*it)->velocity.y = 10*newNormal.y;
+		}
 	}
 }
 
@@ -76,6 +90,15 @@ void draw()
 		glVertex2f((*it)->x, (*it)->y);
 		glEnd();
 	}
+	
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex2f(testTriangle->p1.x, testTriangle->p1.y);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex2f(testTriangle->p2.x, testTriangle->p2.y);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex2f(testTriangle->p3.x, testTriangle->p3.y);
+	glEnd();
 
 	SDL_GL_SwapBuffers();
 }
@@ -116,6 +139,14 @@ int deinit()
 int main (int argc, char* argv[])
 {
 	init();
+
+	testTriangle = new Triangle();
+	testTriangle->p1.x = 100.0f;
+	testTriangle->p1.y = 300.0f;
+	testTriangle->p2.x = 200.0f;
+	testTriangle->p2.y = 300.0f;
+	testTriangle->p3.x = 100.0f;
+	testTriangle->p3.y = 400.0f;
 
 	//easy firework
 	for (int i = 0; i < 500; i++)

@@ -31,6 +31,7 @@ class Particle
 		~Particle();
 
 		void update(Uint32 currTime);
+		void backstep(Uint32 currTime);
 
 	protected:
 

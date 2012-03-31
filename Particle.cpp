@@ -46,3 +46,17 @@ void Particle::update(Uint32 currTime)
 	lastUpdateTime = currTime;
 }
 
+void Particle::backstep(Uint32 currTime)
+{
+	GLfloat deltaTime = 0.01;
+
+	// amy's reccomended Euler integration tricks
+	velocity.x -= (acceleration.x)*deltaTime;
+	x -= (velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime;
+
+        velocity.y -= (acceleration.y)*deltaTime;
+	y -= (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
+
+	lastUpdateTime = currTime;
+}
+
