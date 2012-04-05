@@ -33,6 +33,8 @@ class Particle
 
 		void update(Uint32 currTime);
 		void backstep(Uint32 currTime);
+		
+		void reflect(p_vector& normal);
 
 	protected:
 

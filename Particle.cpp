@@ -49,7 +49,7 @@ void Particle::update(Uint32 currTime)
 
 void Particle::backstep(Uint32 currTime)
 {
-	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime2)/1000.0;
+	GLfloat deltaTime = ((float)lastUpdateTime - (float)lastUpdateTime2)/1000.0;
 
 	// amy's reccomended Euler integration tricks
 	velocity.x -= (acceleration.x)*deltaTime;
@@ -57,5 +57,20 @@ void Particle::backstep(Uint32 currTime)
 
         velocity.y -= (acceleration.y)*deltaTime;
 	y -= (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
+}
+
+void Particle::reflect(p_vector& wallNormal)
+{
+	backstep(0);
+
+	p_vector oldVelo = velocity;
+
+	GLfloat c1 = (-1) * ((oldVelo.x * wallNormal.x) + (oldVelo.y * wallNormal.y));
+	
+	GLfloat newVectorX = oldVelo.x + (2* wallNormal.x * c1);
+	GLfloat newVectorY = oldVelo.y + (2* wallNormal.y * c1);
+
+	velocity.x = newVectorX;
+	velocity.y = newVectorY;
 }
 

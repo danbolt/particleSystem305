@@ -65,18 +65,11 @@ void updateLogic(Uint32 currTime)
 		if (testTriangle->pointIntersect(*it))
 		{
 			(*it)->backstep(currTime);
-
+			
 			p_vector wallNormal(0,0);
 			testTriangle->getRelevantNormal((*it), wallNormal);
-			p_vector oldVelo = (*it)->velocity;
-
-			GLfloat c1 = (-1) * ((oldVelo.x * wallNormal.x) + (oldVelo.y * wallNormal.y));
 			
-			GLfloat newVectorX = oldVelo.x + (2* wallNormal.x * c1);
-			GLfloat newVectorY = oldVelo.y + (2* wallNormal.y * c1);
-
-			(*it)->velocity.x = newVectorX;
-			(*it)->velocity.y = newVectorY;
+			(*it)->reflect(wallNormal);
 		}
 	}
 }
@@ -104,6 +97,18 @@ void draw()
 	glVertex2f(testTriangle->p2.x, testTriangle->p2.y);
 	glColor3f(0.0, 0.0, 1.0);
 	glVertex2f(testTriangle->p3.x, testTriangle->p3.y);
+	glEnd();
+	
+	Particle testParticle(320, 265, 1);
+	p_vector testNormal(0,0);
+	testTriangle->getRelevantNormal(&testParticle, testNormal);
+	
+	printf("(%f,%f)\n", testNormal.x, testNormal.y);
+
+	glBegin(GL_LINES);
+	glColor3f(1.0, 1.0, 0.0);
+	glVertex2f((testTriangle->p3.x + testTriangle->p2.x)/2, (testTriangle->p3.y + testTriangle->p2.y)/2);
+        glVertex2f(((testTriangle->p3.x + testTriangle->p2.x)/2) + (10 * testNormal.x), ((testTriangle->p3.y + testTriangle->p2.y)/2) + (10 * testNormal.y));
 	glEnd();
 
 	SDL_GL_SwapBuffers();
@@ -147,39 +152,35 @@ int main (int argc, char* argv[])
 	init();
 
 	testTriangle = new Triangle();
-	testTriangle->p1.x = 220 ;
-	testTriangle->p1.y = 260 ;
-	testTriangle->p2.x = 420 ;
+	testTriangle->p2.x = 220 ;
 	testTriangle->p2.y = 260 ;
-	testTriangle->p3.x = 320 ;
-	testTriangle->p3.y = 220 ;
+	testTriangle->p3.x = 390 ;
+	testTriangle->p3.y = 260 ;
+	testTriangle->p1.x = 320 ;
+	testTriangle->p1.y = 220 ;
 
 	//easy firework
 	for (int i = 0; i < 100; i++)
 	{
-		Particle* testParticle = new Particle(120.0f, 240.0f, rand() % 10);
-		GLfloat offset = (rand() % 20) - 10;
-		testParticle->velocity.x = 30 + offset;
-		testParticle->velocity.y = 0 + offset;
+		Particle* testParticle = new Particle(120.0f, 140.0f + 2*i, rand() % 10);
+		testParticle->velocity.x = 30 ;
+		testParticle->velocity.y = 0;
 		particleList.push_back(testParticle);
 		
 
-		testParticle = new Particle(520.0f, 240.0f, rand() % 10);
-		offset = (rand() % 20) - 10;
-		testParticle->velocity.x = -30 - offset;
-		testParticle->velocity.y = 0 + offset;
+		testParticle = new Particle(520.0f, 140.0f + 2*i, rand() % 10);
+		testParticle->velocity.x = -30;
+		testParticle->velocity.y = 0;
 		particleList.push_back(testParticle);
 		
-		testParticle = new Particle(320.0f, 340.0f, rand() % 10);
-		offset = (rand() % 20) - 10;
-		testParticle->velocity.x = offset;
-		testParticle->velocity.y = -30 - offset;
+		testParticle = new Particle(200.0f + 2*i, 340.0f, rand() % 10);
+		testParticle->velocity.x = 0;
+		testParticle->velocity.y = -30;
 		particleList.push_back(testParticle);
 
-		testParticle = new Particle(320.0f, 140.0f, rand() % 10);
-		offset = (rand() % 20) - 10;
-		testParticle->velocity.x = offset;
-		testParticle->velocity.y = 30 + offset;
+		testParticle = new Particle(220.0f + 2*i, 140.0f, rand() % 10);
+		testParticle->velocity.x = 0;
+		testParticle->velocity.y = 30;
 		particleList.push_back(testParticle);
 	}
 
