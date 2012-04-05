@@ -17,6 +17,7 @@ SDL_Surface* screen;
 Uint8* keys;
 
 std::vector<Particle*> particleList;
+std::vector<Triangle*> triangleList;
 
 Triangle* testTriangle;
 
@@ -62,14 +63,17 @@ void updateLogic(Uint32 currTime)
 	{
 		(*it)->update(currTime);
 		
-		if (testTriangle->pointIntersect(*it))
+		for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
 		{
-			(*it)->backstep(currTime);
-			
-			p_vector wallNormal(0,0);
-			testTriangle->getRelevantNormal((*it), wallNormal);
-			
-			(*it)->reflect(wallNormal);
+			if ((*it2)->pointIntersect(*it))
+			{
+				(*it)->backstep(currTime);
+				
+				p_vector wallNormal(0,0);
+				(*it2)->getRelevantNormal((*it), wallNormal);
+				
+				(*it)->reflect(wallNormal);
+			}
 		}
 	}
 }
@@ -90,26 +94,17 @@ void draw()
 		glEnd();
 	}
 	
-	glBegin(GL_TRIANGLES);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex2f(testTriangle->p1.x, testTriangle->p1.y);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex2f(testTriangle->p2.x, testTriangle->p2.y);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex2f(testTriangle->p3.x, testTriangle->p3.y);
-	glEnd();
-	
-	Particle testParticle(320, 265, 1);
-	p_vector testNormal(0,0);
-	testTriangle->getRelevantNormal(&testParticle, testNormal);
-	
-	printf("(%f,%f)\n", testNormal.x, testNormal.y);
-
-	glBegin(GL_LINES);
-	glColor3f(1.0, 1.0, 0.0);
-	glVertex2f((testTriangle->p3.x + testTriangle->p2.x)/2, (testTriangle->p3.y + testTriangle->p2.y)/2);
-        glVertex2f(((testTriangle->p3.x + testTriangle->p2.x)/2) + (10 * testNormal.x), ((testTriangle->p3.y + testTriangle->p2.y)/2) + (10 * testNormal.y));
-	glEnd();
+	for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
+	{
+		glBegin(GL_TRIANGLES);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex2f((*it2)->p1.x, (*it2)->p1.y);
+		glColor3f(0.0, 1.0, 0.0);
+		glVertex2f((*it2)->p2.x, (*it2)->p2.y);
+		glColor3f(0.0, 0.0, 1.0);
+		glVertex2f((*it2)->p3.x, (*it2)->p3.y);
+		glEnd();
+	}
 
 	SDL_GL_SwapBuffers();
 }
@@ -158,6 +153,7 @@ int main (int argc, char* argv[])
 	testTriangle->p3.y = 260 ;
 	testTriangle->p1.x = 320 ;
 	testTriangle->p1.y = 220 ;
+	triangleList.push_back(testTriangle);
 
 	//easy firework
 	for (int i = 0; i < 100; i++)
@@ -189,6 +185,7 @@ int main (int argc, char* argv[])
 	loop();
 
 	particleList.clear();
+	triangleList.clear();
 
 	deinit();
 	
