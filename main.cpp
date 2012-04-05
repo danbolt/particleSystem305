@@ -19,8 +19,6 @@ Uint8* keys;
 std::vector<Particle*> particleList;
 std::vector<Triangle*> triangleList;
 
-Triangle* testTriangle;
-
 // initalization function for things like SDL and OpenGL
 int init()
 {
@@ -146,37 +144,24 @@ int main (int argc, char* argv[])
 {
 	init();
 
-	testTriangle = new Triangle();
-	testTriangle->p2.x = 220 ;
-	testTriangle->p2.y = 260 ;
-	testTriangle->p3.x = 390 ;
-	testTriangle->p3.y = 260 ;
-	testTriangle->p1.x = 320 ;
-	testTriangle->p1.y = 220 ;
-	triangleList.push_back(testTriangle);
+	for (int i = 0; i < 10; i++)
+	{
+		Triangle* testTriangle = new Triangle();
+		testTriangle->p1.x = 64*i ;
+		testTriangle->p1.y = 480 ;
+		testTriangle->p2.x = 64*i + 64 ;
+		testTriangle->p2.y = 480 ;
+		testTriangle->p3.x = 64*i + 32;
+		testTriangle->p3.y = 416 ;
+		triangleList.push_back(testTriangle);
+	}
 
 	//easy firework
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		Particle* testParticle = new Particle(120.0f, 140.0f + 2*i, rand() % 10);
-		testParticle->velocity.x = 30 ;
-		testParticle->velocity.y = 0;
-		particleList.push_back(testParticle);
-		
-
-		testParticle = new Particle(520.0f, 140.0f + 2*i, rand() % 10);
-		testParticle->velocity.x = -30;
-		testParticle->velocity.y = 0;
-		particleList.push_back(testParticle);
-		
-		testParticle = new Particle(200.0f + 2*i, 340.0f, rand() % 10);
-		testParticle->velocity.x = 0;
-		testParticle->velocity.y = -30;
-		particleList.push_back(testParticle);
-
-		testParticle = new Particle(220.0f + 2*i, 140.0f, rand() % 10);
-		testParticle->velocity.x = 0;
-		testParticle->velocity.y = 30;
+		Particle* testParticle = new Particle(100.0f, 140.0f, rand() % 10);
+		testParticle->velocity.x = 7 + (rand() % 10);
+		testParticle->acceleration.y = 32;
 		particleList.push_back(testParticle);
 	}
 
