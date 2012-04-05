@@ -24,7 +24,8 @@ class p_vector
 		GLfloat dotProduct(p_vector* other);
 
 		p_vector operator+ (const p_vector& rhs) const;
-		p_vector operator* (const p_vector& rhs) const;
+		p_vector operator- (const p_vector& rhs) const;
+		GLfloat operator* (const p_vector& rhs) const; //dot product
 		p_vector operator* (const GLfloat& rhs) const;
 	private:
 };

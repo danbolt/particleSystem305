@@ -52,13 +52,18 @@ p_vector p_vector::operator+ (const p_vector& rhs) const
 	return temp;
 }
 
-p_vector p_vector::operator* (const p_vector& rhs) const
+p_vector p_vector::operator- (const p_vector& rhs) const
 {
 	p_vector temp(0.0f, 0.0f);
-	temp.x = this->x * rhs.x;
-	temp.y = this->y * rhs.y;
+	temp.x = this->x - rhs.x;
+	temp.y = this->y - rhs.y;
 
 	return temp;
+}
+
+GLfloat p_vector::operator* (const p_vector& rhs) const
+{
+	return (x * rhs.x) + (y * rhs.y);
 }
 
 p_vector p_vector::operator* (const GLfloat& rhs) const

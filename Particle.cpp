@@ -23,6 +23,7 @@ Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter)
 	
 	diameter = newDiameter;
 
+	lastUpdateTime2 = SDL_GetTicks();
 	lastUpdateTime = SDL_GetTicks();
 }
 
@@ -42,13 +43,13 @@ void Particle::update(Uint32 currTime)
 	y += (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
 	velocity.y += (acceleration.y)*deltaTime;
 
-
+	lastUpdateTime2 = lastUpdateTime;
 	lastUpdateTime = currTime;
 }
 
 void Particle::backstep(Uint32 currTime)
 {
-	GLfloat deltaTime = 0.01;
+	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime2)/1000.0;
 
 	// amy's reccomended Euler integration tricks
 	velocity.x -= (acceleration.x)*deltaTime;
@@ -56,7 +57,5 @@ void Particle::backstep(Uint32 currTime)
 
         velocity.y -= (acceleration.y)*deltaTime;
 	y -= (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
-
-	lastUpdateTime = currTime;
 }
 

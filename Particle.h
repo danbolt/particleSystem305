@@ -18,6 +18,7 @@ class Particle
 		p_vector acceleration;
 		
 		Uint32 lastUpdateTime;
+		Uint32 lastUpdateTime2;
 
 		GLfloat r;
 		GLfloat g;

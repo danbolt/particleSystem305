@@ -66,11 +66,17 @@ void updateLogic(Uint32 currTime)
 		{
 			(*it)->backstep(currTime);
 
-			p_vector newNormal(0,0);
-			testTriangle->getRelevantNormal((*it), newNormal);
+			p_vector wallNormal(0,0);
+			testTriangle->getRelevantNormal((*it), wallNormal);
+			p_vector oldVelo = (*it)->velocity;
+
+			GLfloat c1 = (-1) * ((oldVelo.x * wallNormal.x) + (oldVelo.y * wallNormal.y));
 			
-			(*it)->velocity.x = 10*newNormal.x;
-			(*it)->velocity.y = 10*newNormal.y;
+			GLfloat newVectorX = oldVelo.x + (2* wallNormal.x * c1);
+			GLfloat newVectorY = oldVelo.y + (2* wallNormal.y * c1);
+
+			(*it)->velocity.x = newVectorX;
+			(*it)->velocity.y = newVectorY;
 		}
 	}
 }
@@ -141,25 +147,46 @@ int main (int argc, char* argv[])
 	init();
 
 	testTriangle = new Triangle();
-	testTriangle->p1.x = 100.0f;
-	testTriangle->p1.y = 300.0f;
-	testTriangle->p2.x = 200.0f;
-	testTriangle->p2.y = 300.0f;
-	testTriangle->p3.x = 100.0f;
-	testTriangle->p3.y = 400.0f;
+	testTriangle->p1.x = 220 ;
+	testTriangle->p1.y = 260 ;
+	testTriangle->p2.x = 420 ;
+	testTriangle->p2.y = 260 ;
+	testTriangle->p3.x = 320 ;
+	testTriangle->p3.y = 220 ;
 
 	//easy firework
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 100; i++)
 	{
-		Particle* testParticle = new Particle(320.0f, 240.0f, rand() % 10);
-		testParticle->velocity.x = ((rand() % 100) - 50)*cos(i);
-		testParticle->velocity.y = ((rand() % 100) - 50)*sin(i);
+		Particle* testParticle = new Particle(120.0f, 240.0f, rand() % 10);
+		GLfloat offset = (rand() % 20) - 10;
+		testParticle->velocity.x = 30 + offset;
+		testParticle->velocity.y = 0 + offset;
+		particleList.push_back(testParticle);
+		
 
+		testParticle = new Particle(520.0f, 240.0f, rand() % 10);
+		offset = (rand() % 20) - 10;
+		testParticle->velocity.x = -30 - offset;
+		testParticle->velocity.y = 0 + offset;
+		particleList.push_back(testParticle);
+		
+		testParticle = new Particle(320.0f, 340.0f, rand() % 10);
+		offset = (rand() % 20) - 10;
+		testParticle->velocity.x = offset;
+		testParticle->velocity.y = -30 - offset;
+		particleList.push_back(testParticle);
+
+		testParticle = new Particle(320.0f, 140.0f, rand() % 10);
+		offset = (rand() % 20) - 10;
+		testParticle->velocity.x = offset;
+		testParticle->velocity.y = 30 + offset;
 		particleList.push_back(testParticle);
 	}
 
+
+
 	loop();
-	
+
 	particleList.clear();
 
 	deinit();
