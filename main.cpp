@@ -73,6 +73,23 @@ void updateLogic(Uint32 currTime)
 				(*it)->reflect(wallNormal);
 			}
 		}
+		
+		if ((*it)->x < 0)
+		{
+			(*it)->backstep(currTime);
+				
+			p_vector wallNormal(1,0);
+				
+			(*it)->reflect(wallNormal);
+		}
+		else if ((*it)->x > 640)
+		{
+			(*it)->backstep(currTime);
+				
+			p_vector wallNormal(-1,0);
+				
+			(*it)->reflect(wallNormal);
+		}
 	}
 }
 
@@ -147,25 +164,23 @@ int main (int argc, char* argv[])
 	for (int i = 0; i < 10; i++)
 	{
 		Triangle* testTriangle = new Triangle();
-		testTriangle->p1.x = 64*i ;
-		testTriangle->p1.y = 480 ;
-		testTriangle->p2.x = 64*i + 64 ;
-		testTriangle->p2.y = 480 ;
+		testTriangle->p1.x = 64*i - 1 ;
+		testTriangle->p1.y = 480 - 10 ;
+		testTriangle->p2.x = 64*i + 64 + 1 ;
+		testTriangle->p2.y = 480 - 10 ;
 		testTriangle->p3.x = 64*i + 32;
-		testTriangle->p3.y = 416 ;
+		testTriangle->p3.y = 416 - 10 ;
 		triangleList.push_back(testTriangle);
 	}
 
 	//easy firework
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		Particle* testParticle = new Particle(100.0f, 140.0f, rand() % 10);
+		Particle* testParticle = new Particle(rand() % 640, 140.0f, rand() % 10, (rand() % 100)/100.0);
 		testParticle->velocity.x = 7 + (rand() % 10);
 		testParticle->acceleration.y = 32;
 		particleList.push_back(testParticle);
 	}
-
-
 
 	loop();
 

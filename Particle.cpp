@@ -6,10 +6,12 @@
 
 #include "Particle.h"
 
-Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter)
+Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newBounce)
 {
 	x = newX;
 	y = newY;
+	
+	bounce = newBounce;
 
 	velocity.x = 0.0f;
 	velocity.y = 0.0f;
@@ -70,7 +72,7 @@ void Particle::reflect(p_vector& wallNormal)
 	GLfloat newVectorX = oldVelo.x + (2* wallNormal.x * c1);
 	GLfloat newVectorY = oldVelo.y + (2* wallNormal.y * c1);
 
-	velocity.x = newVectorX;
-	velocity.y = newVectorY;
+	velocity.x = newVectorX * bounce;
+	velocity.y = newVectorY * bounce;
 }
 

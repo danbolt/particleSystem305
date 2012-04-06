@@ -27,8 +27,10 @@ class Particle
 		GLfloat x;
 		GLfloat y;
 		GLfloat diameter;
+		
+		GLfloat bounce; //between 0 and 1
 
-		Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter);
+		Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newBounce);
 		~Particle();
 
 		void update(Uint32 currTime);
