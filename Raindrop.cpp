@@ -10,7 +10,7 @@
 
 Raindrop::Raindrop()
 {
-	dead = true;
+	//dead = true;
 }
 
 Raindrop::Raindrop (GLfloat newX, GLfloat newY, GLfloat newXSpeed, GLfloat newYSpeed)
@@ -30,7 +30,7 @@ Raindrop::Raindrop (GLfloat newX, GLfloat newY, GLfloat newXSpeed, GLfloat newYS
 	
 	dead = false;
 	
-	bounce = 0.4;
+	bounce = 0.2;
 	
 	r = 0.0;
 	g = 0.0;
@@ -49,10 +49,18 @@ void Raindrop::specialUpdate(Uint32 currTime)
 
 void Raindrop::draw()
 {
+	p_vector dir = velocity;
+	dir.normalize();
+
 	glPointSize(diameter);
 	glBegin(GL_POINTS);
 	glColor3f(r, g, b);
 	glVertex2f(0, 0);
+	glEnd();
+	glPointSize(diameter/1.5);
+	glBegin(GL_POINTS);
+	glColor3f(r, g, b);
+	glVertex2f(-2*dir.x, -2*dir.y);
 	glEnd();
 }
 

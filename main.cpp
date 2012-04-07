@@ -35,6 +35,8 @@ int init()
 		perror("Error initalizing SDL");
 		return 0;
 	}
+	
+	freopen( "CON", "w", stdout );
 
 	if ((screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL)) == NULL)
 	{
@@ -66,45 +68,49 @@ int init()
 
 void updateLogic(Uint32 currTime)
 {
-	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
+	int i = 0;
+	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
 	{
 		if ((*it)->dead)
 		{
-			printf("x:%f y:%f xS:%f yS:%f\n", (*it)->x, (*it)->y, (*it)->velocity.x, (*it)->velocity.y);
+			printf("x:%f y:%f v:%f\n", (*it)->x, (*it)->x, (*it)->velocity.y);
 			it = particleList.erase(it);
-			continue;
 		}
-
-		(*it)->update(currTime);
-		
-		for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
+		else
 		{
-			if ((*it2)->pointIntersect(*it))
+			(*it)->update(currTime);
+			
+			for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
+			{
+				if ((*it2)->pointIntersect(*it))
+				{
+					(*it)->backstep(currTime);
+					
+					p_vector wallNormal(0,0);
+					(*it2)->getRelevantNormal((*it), wallNormal);
+					
+					(*it)->reflect(wallNormal);
+				}
+			}
+			
+			if ((*it)->x <= 0)
 			{
 				(*it)->backstep(currTime);
-				
-				p_vector wallNormal(0,0);
-				(*it2)->getRelevantNormal((*it), wallNormal);
-				
+					
+				p_vector wallNormal(1,0);
+
 				(*it)->reflect(wallNormal);
 			}
-		}
-		
-		if ((*it)->x <= 0)
-		{
-			(*it)->backstep(currTime);
-				
-			p_vector wallNormal(1,0);
-				
-			(*it)->reflect(wallNormal);
-		}
-		else if ((*it)->x >= SCREEN_WIDTH)
-		{
-			(*it)->backstep(currTime);
-				
-			p_vector wallNormal(-1,0);
-				
-			(*it)->reflect(wallNormal);
+			else if ((*it)->x >= SCREEN_WIDTH)
+			{
+				(*it)->backstep(currTime);
+					
+				p_vector wallNormal(-1,0);
+					
+				(*it)->reflect(wallNormal);
+			}
+			
+			++it;
 		}
 	}
 }
@@ -156,8 +162,11 @@ void loop()
 		
 		keys = SDL_GetKeyState(NULL);
 		
-		Particle* testParticle = new Raindrop( 100.0, 100.0f, 0.0f, 0.0f);
-		particleList.push_back(testParticle);
+		if (keys[SDLK_SPACE])
+		{
+			Particle* testParticle = new Raindrop( 100.0, 100.0f, 0.0f, 0.0f);
+			particleList.push_back(testParticle);
+		}
 
 		updateLogic(SDL_GetTicks());
 
@@ -190,6 +199,15 @@ int main (int argc, char* argv[])
 		testTriangle->p3.y = 416 - 10 ;
 		triangleList.push_back(testTriangle);
 	}
+	
+	Triangle* testTriangle = new Triangle();
+	testTriangle->p1.x = 100 ;
+	testTriangle->p1.y = 250 ;
+	testTriangle->p2.x = 100 ;
+	testTriangle->p2.y = 300 ;
+	testTriangle->p3.x = 200 ;
+	testTriangle->p3.y = 300 ;
+	triangleList.push_back(testTriangle);
 
 	//easy firework
 	for (int i = 0; i < 100; i++)
