@@ -8,13 +8,18 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
+#include "Globals.h"
 #include "vector.h"
 #include "Particle.h"
+#include "Raindrop.h"
 #include "Triangle.h"
 
 SDL_Surface* screen;
 
 Uint8* keys;
+
+int SCREEN_WIDTH;
+int SCREEN_HEIGHT;
 
 std::vector<Particle*> particleList;
 std::vector<Triangle*> triangleList;
@@ -22,13 +27,16 @@ std::vector<Triangle*> triangleList;
 // initalization function for things like SDL and OpenGL
 int init()
 {
+	SCREEN_WIDTH = 640;
+	SCREEN_HEIGHT = 480;
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
 	{
 		perror("Error initalizing SDL");
 		return 0;
 	}
 
-	if ((screen = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL)) == NULL)
+	if ((screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL)) == NULL)
 	{
 		perror("Error initalizing screen");
 		return 0;
@@ -38,7 +46,7 @@ int init()
 
 	SDL_WM_SetCaption("Particle System", NULL);
 	
-	glViewport(0, 0, 640, 480);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -48,17 +56,25 @@ int init()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
 	
-	glOrtho(0, 640, 480, 0, 1, -1);
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 
+	particleList.clear();
 
 	return 1;
 }
 
 void updateLogic(Uint32 currTime)
 {
-	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
+	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
+		if ((*it)->dead)
+		{
+			printf("x:%f y:%f xS:%f yS:%f\n", (*it)->x, (*it)->y, (*it)->velocity.x, (*it)->velocity.y);
+			it = particleList.erase(it);
+			continue;
+		}
+
 		(*it)->update(currTime);
 		
 		for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
@@ -74,7 +90,7 @@ void updateLogic(Uint32 currTime)
 			}
 		}
 		
-		if ((*it)->x < 0)
+		if ((*it)->x <= 0)
 		{
 			(*it)->backstep(currTime);
 				
@@ -82,7 +98,7 @@ void updateLogic(Uint32 currTime)
 				
 			(*it)->reflect(wallNormal);
 		}
-		else if ((*it)->x > 640)
+		else if ((*it)->x >= SCREEN_WIDTH)
 		{
 			(*it)->backstep(currTime);
 				
@@ -102,11 +118,10 @@ void draw()
 
 	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
-		glPointSize((*it)->diameter);
-		glBegin(GL_POINTS);
-		glColor3f((*it)->r, (*it)->g, (*it)->b);
-		glVertex2f((*it)->x, (*it)->y);
-		glEnd();
+		glPushMatrix();
+		glTranslatef((*it)->x, (*it)->y, 0);
+		(*it)->draw();
+		glPopMatrix();
 	}
 	
 	for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
@@ -140,6 +155,9 @@ void loop()
 		}
 		
 		keys = SDL_GetKeyState(NULL);
+		
+		Particle* testParticle = new Raindrop( 100.0, 100.0f, 0.0f, 0.0f);
+		particleList.push_back(testParticle);
 
 		updateLogic(SDL_GetTicks());
 
@@ -174,11 +192,9 @@ int main (int argc, char* argv[])
 	}
 
 	//easy firework
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
-		Particle* testParticle = new Particle(rand() % 640, 140.0f, rand() % 10, (rand() % 100)/100.0);
-		testParticle->velocity.x = 7 + (rand() % 10);
-		testParticle->acceleration.y = 32;
+		Raindrop* testParticle = new Raindrop(rand() % 640, 140.0f, rand() % 10, (rand() % 10) - 20);
 		particleList.push_back(testParticle);
 	}
 

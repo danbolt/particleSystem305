@@ -4,7 +4,13 @@
 
 #include <GL/gl.h>
 
+#include "Globals.h"
 #include "Particle.h"
+
+Particle::Particle()
+{
+	dead = true;
+}	
 
 Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newBounce)
 {
@@ -12,6 +18,8 @@ Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newB
 	y = newY;
 	
 	bounce = newBounce;
+	
+	dead = false;
 
 	velocity.x = 0.0f;
 	velocity.y = 0.0f;
@@ -34,8 +42,20 @@ Particle::~Particle()
 	//
 }
 
+void Particle::specialUpdate(Uint32 currTime)
+{
+	//
+}
+
 void Particle::update(Uint32 currTime)
 {
+	if (dead)
+	{
+		return;
+	}
+	
+	specialUpdate(currTime);
+
 	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime)/1000.0;
 
 	// amy's reccomended Euler integration tricks
@@ -47,6 +67,23 @@ void Particle::update(Uint32 currTime)
 
 	lastUpdateTime2 = lastUpdateTime;
 	lastUpdateTime = currTime;
+	
+	if (x < -10)
+	{
+		dead = true;
+	}
+	if (x > SCREEN_WIDTH + 10)
+	{
+		dead = true;
+	}
+	if (y < -10)
+	{
+		dead = true;
+	}
+	if (y > SCREEN_HEIGHT + 10)
+	{
+		dead = true;
+	}
 }
 
 void Particle::backstep(Uint32 currTime)
@@ -74,5 +111,14 @@ void Particle::reflect(p_vector& wallNormal)
 
 	velocity.x = newVectorX * bounce;
 	velocity.y = newVectorY * bounce;
+}
+
+void Particle::draw()
+{
+	glPointSize(diameter);
+	glBegin(GL_POINTS);
+	glColor3f(r, g, b);
+	glVertex2f(0, 0);
+	glEnd();
 }
 
