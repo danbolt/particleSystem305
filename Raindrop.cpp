@@ -29,8 +29,8 @@ Raindrop::Raindrop (GLfloat newX, GLfloat newY, GLfloat newXSpeed, GLfloat newYS
 	creationTime = SDL_GetTicks();
 	
 	dead = false;
-	
-	bounce = 0.2;
+
+	bounce = 0.3;
 	
 	r = 0.0;
 	g = 0.0;
@@ -44,7 +44,10 @@ Raindrop::~Raindrop()
 
 void Raindrop::specialUpdate(Uint32 currTime)
 {
-	//
+	if (velocity.length() < 0.001 && currTime - creationTime > 5000)
+	{
+		dead = true;
+	}
 }
 
 void Raindrop::draw()

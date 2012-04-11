@@ -17,12 +17,19 @@
 SDL_Surface* screen;
 
 Uint8* keys;
+int mouseX = 0;
+int mouseY = 0;
+
+Uint32 lastUpdate;
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
 
 std::vector<Particle*> particleList;
 std::vector<Triangle*> triangleList;
+
+bool spaceDown = false;
+int addCount = 0;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -61,19 +68,24 @@ int init()
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 
-	particleList.clear();
+	particleList.reserve(1000);
+	//particleList.clear();
+	
+	lastUpdate = SDL_GetTicks();
 
 	return 1;
 }
 
 void updateLogic(Uint32 currTime)
 {
-	int i = 0;
+	//printf("%d\n", particleList.size());
+
 	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
 	{
 		if ((*it)->dead)
 		{
-			printf("x:%f y:%f v:%f\n", (*it)->x, (*it)->x, (*it)->velocity.y);
+			//printf("deleting x:%f y:%f v:%f\n", (*it)->x, (*it)->y, (*it)->velocity.length());
+			delete (*it);
 			it = particleList.erase(it);
 		}
 		else
@@ -160,20 +172,24 @@ void loop()
 			}
 		}
 		
-		keys = SDL_GetKeyState(NULL);
-		
-		if (keys[SDLK_SPACE])
+		Uint32 currentTime = SDL_GetTicks();
+		if (currentTime - lastUpdate > 30)
 		{
-			Particle* testParticle = new Raindrop( 100.0, 100.0f, 0.0f, 0.0f);
-			particleList.push_back(testParticle);
+			keys = SDL_GetKeyState(NULL);
+			
+			{
+				SDL_GetMouseState(&mouseX, &mouseY);
+				Raindrop* addition = new Raindrop( (GLfloat)mouseX, (GLfloat)mouseY, (rand() % 20) - 10, (rand() % 15) - 10);
+				particleList.push_back(addition);
+				//printf("adding x:%f y:%f v:%f\n", addition->x, addition->y, addition->velocity.length());
+			}
+	
+			updateLogic(currentTime);
+
+			draw();                      
+			lastUpdate = currentTime;
 		}
-
-		updateLogic(SDL_GetTicks());
-
-		draw();
 	}
-
-	SDL_Delay(20);
 }
 
 int deinit()
@@ -188,18 +204,6 @@ int main (int argc, char* argv[])
 {
 	init();
 
-	for (int i = 0; i < 10; i++)
-	{
-		Triangle* testTriangle = new Triangle();
-		testTriangle->p1.x = 64*i - 1 ;
-		testTriangle->p1.y = 480 - 10 ;
-		testTriangle->p2.x = 64*i + 64 + 1 ;
-		testTriangle->p2.y = 480 - 10 ;
-		testTriangle->p3.x = 64*i + 32;
-		testTriangle->p3.y = 416 - 10 ;
-		triangleList.push_back(testTriangle);
-	}
-	
 	Triangle* testTriangle = new Triangle();
 	testTriangle->p1.x = 100 ;
 	testTriangle->p1.y = 250 ;
@@ -208,13 +212,6 @@ int main (int argc, char* argv[])
 	testTriangle->p3.x = 200 ;
 	testTriangle->p3.y = 300 ;
 	triangleList.push_back(testTriangle);
-
-	//easy firework
-	for (int i = 0; i < 100; i++)
-	{
-		Raindrop* testParticle = new Raindrop(rand() % 640, 140.0f, rand() % 10, (rand() % 10) - 20);
-		particleList.push_back(testParticle);
-	}
 
 	loop();
 

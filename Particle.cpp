@@ -10,14 +10,14 @@
 Particle::Particle()
 {
 	dead = true;
-}	
+}
 
-Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newBounce)
+Particle::Particle(GLfloat newX, GLfloat newY)
 {
 	x = newX;
 	y = newY;
 	
-	bounce = newBounce;
+	bounce = (rand() % 100)/100.0;
 	
 	dead = false;
 
@@ -31,7 +31,7 @@ Particle::Particle(GLfloat newX, GLfloat newY, GLfloat newDiameter, GLfloat newB
 	g = (rand() % 100) - 50;
 	b = (rand() % 100) - 50;
 	
-	diameter = newDiameter;
+	diameter = 3;
 
 	lastUpdateTime2 = SDL_GetTicks();
 	lastUpdateTime = SDL_GetTicks();
@@ -57,6 +57,8 @@ void Particle::update(Uint32 currTime)
 	specialUpdate(currTime);
 
 	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime)/1000.0;
+	
+	GLfloat distance = sqrt( pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) + pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) );
 
 	// amy's reccomended Euler integration tricks
 	x += (velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime;
@@ -64,6 +66,11 @@ void Particle::update(Uint32 currTime)
 
 	y += (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
 	velocity.y += (acceleration.y)*deltaTime;
+
+	if (distance > 5.0)
+	{
+		printf("distance travelled: %f, deltatime: %f\n", distance, deltaTime);
+	}
 
 	lastUpdateTime2 = lastUpdateTime;
 	lastUpdateTime = currTime;

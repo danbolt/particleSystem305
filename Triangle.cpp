@@ -44,8 +44,8 @@ void Triangle::getRelevantNormal(Particle* p, p_vector& normal)
 		n1.normalize();
 		n2.normalize();
 		
-		Particle candidate1(p->x + n1.x, p->y + n1.y, 0, 0.5);
-		Particle candidate2(p->x + n2.x, p->y + n2.y, 0, 0.5);
+		Particle candidate1(p->x + n1.x, p->y + n1.y);
+		Particle candidate2(p->x + n2.x, p->y + n2.y);
 
 		if (!pointIntersect(&candidate1))
 		{
@@ -76,8 +76,8 @@ void Triangle::getRelevantNormal(Particle* p, p_vector& normal)
 		n1.normalize();
 		n2.normalize();
 
-		Particle candidate1(p->x + n1.x, p->y + n1.y, 0, 0.5);
-		Particle candidate2(p->x + n2.x, p->y + n2.y, 0, 0.5);
+		Particle candidate1(p->x + n1.x, p->y + n1.y);
+		Particle candidate2(p->x + n2.x, p->y + n2.y);
 
 		if (!pointIntersect(&candidate1))
 		{
@@ -107,8 +107,8 @@ void Triangle::getRelevantNormal(Particle* p, p_vector& normal)
 		n1.normalize();
 		n2.normalize();
 
-		Particle candidate1(p->x + n1.x, p->y + n1.y, 0, 0.5);
-		Particle candidate2(p->x + n2.x, p->y + n2.y, 0, 0.5);
+		Particle candidate1(p->x + n1.x, p->y + n1.y);
+		Particle candidate2(p->x + n2.x, p->y + n2.y);
 
 		if (!pointIntersect(&candidate1))
 		{
