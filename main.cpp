@@ -136,6 +136,10 @@ void draw()
 
 	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
+		if ((*it)->dead)
+		{
+			continue;
+		}	
 		glPushMatrix();
 		glTranslatef((*it)->x, (*it)->y, 0);
 		(*it)->draw();

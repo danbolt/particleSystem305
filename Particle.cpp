@@ -58,7 +58,15 @@ void Particle::update(Uint32 currTime)
 
 	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime)/1000.0;
 	
+	// if the particle has travelled a crazy amount of distance, something's wrong. for now delete it
+	// might not be able to fix in time frame, but easy to cover up
 	GLfloat distance = sqrt( pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) + pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) );
+	if (distance > 5.0)
+	{
+		//printf("distance travelled: %f, deltatime: %f\n", distance, deltaTime);
+		dead = true;
+	}
+
 
 	// amy's reccomended Euler integration tricks
 	x += (velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime;
@@ -66,11 +74,6 @@ void Particle::update(Uint32 currTime)
 
 	y += (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
 	velocity.y += (acceleration.y)*deltaTime;
-
-	if (distance > 5.0)
-	{
-		printf("distance travelled: %f, deltatime: %f\n", distance, deltaTime);
-	}
 
 	lastUpdateTime2 = lastUpdateTime;
 	lastUpdateTime = currTime;
