@@ -13,6 +13,7 @@
 #include "Particle.h"
 #include "Raindrop.h"
 #include "Triangle.h"
+#include "Flame.h"
 
 SDL_Surface* screen;
 
@@ -139,7 +140,7 @@ void draw()
 		if ((*it)->dead)
 		{
 			continue;
-		}	
+		}
 		glPushMatrix();
 		glTranslatef((*it)->x, (*it)->y, 0);
 		(*it)->draw();
@@ -183,7 +184,7 @@ void loop()
 			
 			{
 				SDL_GetMouseState(&mouseX, &mouseY);
-				Raindrop* addition = new Raindrop( (GLfloat)mouseX, (GLfloat)mouseY, (rand() % 20) - 10, (rand() % 15) - 10);
+				Flame* addition = new Flame( (GLfloat)mouseX, (GLfloat)mouseY);
 				particleList.push_back(addition);
 				//printf("adding x:%f y:%f v:%f\n", addition->x, addition->y, addition->velocity.length());
 			}
