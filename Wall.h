@@ -24,6 +24,9 @@ class Wall
 	       ~Wall();
 	       
 	       void draw();
+	       bool hitTest(GLfloat oX, GLfloat oY, GLfloat oWidth, GLfloat oHeight);
+	       
+	       bool touching;
 
 	       GLfloat x,y;
 	       Triangle upper;

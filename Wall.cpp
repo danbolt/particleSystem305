@@ -13,7 +13,7 @@ Wall::Wall(GLfloat newX, GLfloat newY)
 {
 	x = newX;
 	y = newY;
-	
+
 	upper.p1.x = newX;
 	upper.p1.y = newY;
 	upper.p2.x = newX + 16;
@@ -34,6 +34,18 @@ Wall::Wall(GLfloat newX, GLfloat newY)
 Wall::~Wall()
 {
 	//
+}
+
+bool Wall::hitTest(GLfloat oX, GLfloat oY, GLfloat oWidth, GLfloat oHeight)
+{
+	if (x < oX + oWidth && x + 16 > oX && y < oY + oHeight && y + 16 > oY)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void Wall::draw()

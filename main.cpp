@@ -16,6 +16,7 @@
 #include "Flame.h"
 #include "Fire.h"
 #include "Wall.h"
+#include "Player.h"
 
 SDL_Surface* screen;
 
@@ -32,11 +33,12 @@ std::vector<Particle*> particleList;
 std::vector<Triangle*> triangleList;
 std::vector<Wall*> wallList;
 
+Player* pl;
+
 bool spaceDown = false;
 int addCount = 0;
 
 Fire* testFire;
-
 Wall* testWall;
 
 // initalization function for things like SDL and OpenGL
@@ -86,6 +88,8 @@ int init()
 
 void updateLogic(Uint32 currTime)
 {
+	pl->update(currTime);
+
 	testFire->update(currTime);
 
 	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
@@ -140,7 +144,7 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glLoadIdentity();
-	
+
 	for(std::vector<Wall*>::iterator it = wallList.begin(); it != wallList.end(); ++it)
 	{
 		(*it)->draw();
@@ -165,6 +169,8 @@ void draw()
 			(*it2)->draw();
 		}
 	}
+	
+	pl->draw();
 
 	SDL_GL_SwapBuffers();
 }
@@ -214,13 +220,15 @@ int deinit()
 int main (int argc, char* argv[])
 {
 	init();
-
-	testFire = new Fire(320, 240, &particleList);
-	triangleList.push_back(testFire);
 	
+	pl = new Player(320, 240, &particleList, &wallList);
+
+	testFire = new Fire(320, 340, &particleList);
+	triangleList.push_back(testFire);
+
 	for (int i = 0; i < 30*40; i++)
 	{
-		if (rand() % 100 < 50)
+		if (rand() % 100 < 90)
 		{
 			continue;
 		}
