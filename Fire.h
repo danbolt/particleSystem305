@@ -1,4 +1,4 @@
-// C++ particle raindrop
+// C++ particle for fire
 //
 // CSC 305 Project 5 : Particle System
 // Daniel Savage
@@ -25,7 +25,7 @@ class Fire : public Triangle
 
 	       virtual void update(Uint32 currTime);
 	       virtual bool pointIntersect(Particle* p);
-	       
+
 	       virtual void draw();
 	       
 	       int life; //between 0 and 100

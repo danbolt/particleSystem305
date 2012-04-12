@@ -15,6 +15,7 @@
 #include "Triangle.h"
 #include "Flame.h"
 #include "Fire.h"
+#include "Wall.h"
 
 SDL_Surface* screen;
 
@@ -29,11 +30,14 @@ int SCREEN_HEIGHT;
 
 std::vector<Particle*> particleList;
 std::vector<Triangle*> triangleList;
+std::vector<Wall*> wallList;
 
 bool spaceDown = false;
 int addCount = 0;
 
 Fire* testFire;
+
+Wall* testWall;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -73,7 +77,7 @@ int init()
 	glMatrixMode(GL_MODELVIEW);
 
 	particleList.reserve(3000);
-	//particleList.clear();
+	wallList.reserve(1200);
 
 	lastUpdate = SDL_GetTicks();
 
@@ -88,7 +92,6 @@ void updateLogic(Uint32 currTime)
 	{
 		if ((*it)->dead)
 		{
-			//printf("deleting x:%f y:%f v:%f\n", (*it)->x, (*it)->y, (*it)->velocity.length());
 			delete (*it);
 			it = particleList.erase(it);
 		}
@@ -137,6 +140,11 @@ void draw()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glLoadIdentity();
+	
+	for(std::vector<Wall*>::iterator it = wallList.begin(); it != wallList.end(); ++it)
+	{
+		(*it)->draw();
+	}
 
 	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
 	{
@@ -209,8 +217,21 @@ int main (int argc, char* argv[])
 
 	testFire = new Fire(320, 240, &particleList);
 	triangleList.push_back(testFire);
+	
+	for (int i = 0; i < 30*40; i++)
+	{
+		if (rand() % 100 < 50)
+		{
+			continue;
+		}
 
-	Triangle* testTriangle = new Triangle();
+		testWall = new Wall((i % 40)*16, (i/30) * 16);
+		wallList.push_back(testWall);
+		triangleList.push_back(&(testWall->upper));
+		triangleList.push_back(&(testWall->lower));
+	}
+
+	/*Triangle* testTriangle = new Triangle();
 	testTriangle->p1.x = 100 ;
 	testTriangle->p1.y = 250 ;
 	testTriangle->p2.x = 100 ;
@@ -218,7 +239,7 @@ int main (int argc, char* argv[])
 	testTriangle->p3.x = 200 ;
 	testTriangle->p3.y = 300 ;
 	testTriangle->visible = true;
-	triangleList.push_back(testTriangle);
+	triangleList.push_back(testTriangle);*/
 
 	loop();
 
