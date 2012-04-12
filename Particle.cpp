@@ -32,6 +32,8 @@ Particle::Particle(GLfloat newX, GLfloat newY)
 	b = (rand() % 100) - 50;
 	
 	diameter = 3;
+	
+	type = NONE;
 
 	lastUpdateTime2 = SDL_GetTicks();
 	lastUpdateTime = SDL_GetTicks();

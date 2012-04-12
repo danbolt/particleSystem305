@@ -20,8 +20,12 @@ class Triangle
 		p_vector p2;
 		p_vector p3;
 		
-		bool pointIntersect(Particle* p);
-		void getRelevantNormal(Particle* p, p_vector& normal);
+		bool visible;
+		
+		virtual bool pointIntersect(Particle* p);
+		virtual void getRelevantNormal(Particle* p, p_vector& normal);
+		
+		virtual void draw();
 
 	protected:
 

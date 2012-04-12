@@ -14,6 +14,7 @@
 #include "Raindrop.h"
 #include "Triangle.h"
 #include "Flame.h"
+#include "Fire.h"
 
 SDL_Surface* screen;
 
@@ -31,6 +32,8 @@ std::vector<Triangle*> triangleList;
 
 bool spaceDown = false;
 int addCount = 0;
+
+Fire* testFire;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -69,9 +72,9 @@ int init()
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 
-	particleList.reserve(1000);
+	particleList.reserve(3000);
 	//particleList.clear();
-	
+
 	lastUpdate = SDL_GetTicks();
 
 	return 1;
@@ -79,7 +82,7 @@ int init()
 
 void updateLogic(Uint32 currTime)
 {
-	//printf("%d\n", particleList.size());
+	testFire->update(currTime);
 
 	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
 	{
@@ -146,17 +149,13 @@ void draw()
 		(*it)->draw();
 		glPopMatrix();
 	}
-	
+
 	for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
 	{
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.0, 0.0, 0.0);
-		glVertex2f((*it2)->p1.x, (*it2)->p1.y);
-		glColor3f(0.0, 1.0, 0.0);
-		glVertex2f((*it2)->p2.x, (*it2)->p2.y);
-		glColor3f(0.0, 0.0, 1.0);
-		glVertex2f((*it2)->p3.x, (*it2)->p3.y);
-		glEnd();
+		if ((*it2)->visible)
+		{
+			(*it2)->draw();
+		}
 	}
 
 	SDL_GL_SwapBuffers();
@@ -180,15 +179,14 @@ void loop()
 		Uint32 currentTime = SDL_GetTicks();
 		if (currentTime - lastUpdate > 30)
 		{
+
 			keys = SDL_GetKeyState(NULL);
 			
 			{
 				SDL_GetMouseState(&mouseX, &mouseY);
-				Flame* addition = new Flame( (GLfloat)mouseX, (GLfloat)mouseY);
-				particleList.push_back(addition);
-				//printf("adding x:%f y:%f v:%f\n", addition->x, addition->y, addition->velocity.length());
+				particleList.push_back(new Raindrop(mouseX, mouseY, (rand() % 10) - 5, (rand() % 10) - 5));
 			}
-	
+
 			updateLogic(currentTime);
 
 			draw();                      
@@ -209,6 +207,9 @@ int main (int argc, char* argv[])
 {
 	init();
 
+	testFire = new Fire(320, 240, &particleList);
+	triangleList.push_back(testFire);
+
 	Triangle* testTriangle = new Triangle();
 	testTriangle->p1.x = 100 ;
 	testTriangle->p1.y = 250 ;
@@ -216,6 +217,7 @@ int main (int argc, char* argv[])
 	testTriangle->p2.y = 300 ;
 	testTriangle->p3.x = 200 ;
 	testTriangle->p3.y = 300 ;
+	testTriangle->visible = true;
 	triangleList.push_back(testTriangle);
 
 	loop();

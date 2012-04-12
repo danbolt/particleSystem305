@@ -133,3 +133,15 @@ void Triangle::getRelevantNormal(Particle* p, p_vector& normal)
 	}
 }
 
+void Triangle::draw()
+{
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex2f(p1.x, p1.y);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex2f(p2.x, p2.y);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex2f(p3.x, p3.y);
+	glEnd();
+}
+

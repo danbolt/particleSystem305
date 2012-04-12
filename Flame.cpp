@@ -29,6 +29,8 @@ Flame::Flame (GLfloat newX, GLfloat newY)
 	creationTime = SDL_GetTicks();
 	
 	dead = false;
+	
+	type = FLAME;
 
 	bounce = 0.0f;
 	
@@ -44,7 +46,7 @@ Flame::~Flame()
 
 void Flame::specialUpdate(Uint32 currTime)
 {
-	if (velocity.length() < 1.0f || currTime - creationTime > 5000)
+	if (velocity.length() < 1.0f || currTime - creationTime > 5000 - (Uint32)(100*fabs(velocity.x)))
 	{
 		dead = true;
 	}

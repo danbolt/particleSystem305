@@ -29,6 +29,8 @@ Raindrop::Raindrop (GLfloat newX, GLfloat newY, GLfloat newXSpeed, GLfloat newYS
 	creationTime = SDL_GetTicks();
 	
 	dead = false;
+	
+	type = RAINDROP;
 
 	bounce = 0.3;
 	

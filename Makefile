@@ -1,7 +1,7 @@
 all: compileWin
 
-compileWin: main.o p_vector.o Particle.o Triangle.o Raindrop.o Flame.o
-	g++ -pg -Wall vector.o main.o Particle.o Triangle.o Raindrop.o Flame.o -o particle -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32
+compileWin: main.o p_vector.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o
+	g++ -pg -Wall vector.o main.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o -o particle -lmingw32 -lSDLmain -lSDL -lopengl32 -lglu32
 
 main.o:
 	g++ -pg -Wall -c main.cpp
@@ -21,6 +21,9 @@ Raindrop.o:
 Flame.o:
 	g++ -pg -Wall -c Flame.cpp
 
+Fire.o:
+	g++ -pg -Wall -c Fire.cpp
+
 clean:
-	rm particle.exe main.o vector.o Particle.o Triangle.o Raindrop.o Flame.o
+	rm particle.exe main.o vector.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o
 

@@ -11,6 +11,13 @@
 
 #include "vector.h"
 
+enum ParticleType
+{
+	NONE,
+	RAINDROP,
+	FLAME
+};
+
 class Particle
 {
 	public:
@@ -29,6 +36,8 @@ class Particle
 		GLfloat diameter;
 		
 		bool dead; //identifier which marks for deletion
+		
+		ParticleType type;
 		
 		GLfloat bounce; //between 0 and 1
 
