@@ -66,17 +66,15 @@ void Player::update(Uint32 currTime)
 	x += xSpeed;
 	y += ySpeed;
 	
-	for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
+	/*for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
 	{
 		if ((*it)->hitTest(x, y, 16, 16))
 		{
 			x -= xSpeed;
 			y -= ySpeed;
 		}
-	}
+	}        */
 
-	/*
-	
 	bool nwHit = false;
 	bool neHit = false;
 	bool swHit = false;
@@ -84,27 +82,10 @@ void Player::update(Uint32 currTime)
 	
 	for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
 	{
-		nwHit = (*it)->hitTest(x, y, 4, 4) || nwHit;
-		neHit = (*it)->hitTest(x + 4, y, 4, 4) || neHit;
-		swHit = (*it)->hitTest(x, y + 4, 4, 4) || swHit;
-		seHit = (*it)->hitTest(x + 4, y + 4, 4, 4) || seHit;
-	}
-	
-	if (nwHit)
-	{
-		printf("nw\n");
-	}
-	if (neHit)
-	{
-		printf("ne\n");
-	}
-	if (swHit)
-	{
-		printf("sw\n");
-	}
-	if (seHit)
-	{
-		printf("se\n");
+		nwHit = (*it)->hitTest(x + 2, y + 2, 8, 8) || nwHit;
+		neHit = (*it)->hitTest(x + 6, y + 2, 8, 8) || neHit;
+		swHit = (*it)->hitTest(x + 2, y + 6, 8, 8) || swHit;
+		seHit = (*it)->hitTest(x + 6, y + 6, 8, 8) || seHit;
 	}
 
 	if (log_xor(log_xor(neHit, nwHit), log_xor(seHit, swHit)))
@@ -117,11 +98,11 @@ void Player::update(Uint32 currTime)
 		{
 			x -= xSpeed;
 		}
-		if (ySpeed < 0.0 && (seHit || swHit))
+		if (ySpeed > 0.0 && (seHit || swHit))
 		{
 			y -= ySpeed;
 		}
-		if (ySpeed > 0.0 && (neHit || nwHit))
+		if (ySpeed < 0.0 && (neHit || nwHit))
 		{
 			y -= ySpeed;
 		}
@@ -135,19 +116,15 @@ void Player::update(Uint32 currTime)
 	{
 		x -= xSpeed;
 	}
-	*/
 }
 
 void Player::draw()
 {
-	glPushMatrix();
-	glTranslatef(x, y, 0);
 	glBegin(GL_QUADS);
 	glColor3f(1.0, 1.0, 1.0);
-	glVertex2f(0, 0);
-	glVertex2f(16, 0);
-	glVertex2f(16, 16);
-	glVertex2f(0, 16);
+	glVertex2f(x, y);
+	glVertex2f(x + 16, y);
+	glVertex2f(x + 16, y + 16);
+	glVertex2f(x, y + 16);
 	glEnd();
-	glPopMatrix();
 }

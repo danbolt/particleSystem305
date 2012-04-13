@@ -221,7 +221,7 @@ int main (int argc, char* argv[])
 {
 	init();
 	
-	pl = new Player(320, 240, &particleList, &wallList);
+	pl = new Player(320, 140, &particleList, &wallList);
 
 	testFire = new Fire(320, 340, &particleList);
 	triangleList.push_back(testFire);
