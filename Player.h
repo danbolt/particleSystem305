@@ -22,14 +22,19 @@ class Player
 	public:
 	       Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList);
 	       ~Player();
-	       
+
 	       void update(Uint32 currTime);
 	       void draw();
 	       bool log_xor(bool a, bool b);
 
 	       GLfloat x,y;
 	       GLfloat xSpeed, ySpeed;
-	       
+
+	       bool nwHit;
+	       bool neHit;
+	       bool swHit;
+	       bool seHit;
+
 	       vector<Particle*>* particleList;
 	       vector<Wall*>* wallList;
 };

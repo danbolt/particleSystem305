@@ -49,43 +49,31 @@ void Player::update(Uint32 currTime)
 	{
 		xSpeed = 0;
 	}
-
-	if (keys[SDLK_DOWN])
-	{
-		ySpeed = 2;
-	}
-	else if (keys[SDLK_UP])
-	{
-		ySpeed = -2;
-	}
-	else
-	{
-		ySpeed = 0;
-	}
 	
+	if (keys[SDLK_SPACE] && (swHit || seHit))
+	{
+		ySpeed = -3;
+	}
+
+	if (ySpeed < 5)
+	{
+		ySpeed += 0.10;
+	}
+
 	x += xSpeed;
 	y += ySpeed;
-	
-	/*for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
-	{
-		if ((*it)->hitTest(x, y, 16, 16))
-		{
-			x -= xSpeed;
-			y -= ySpeed;
-		}
-	}        */
 
-	bool nwHit = false;
-	bool neHit = false;
-	bool swHit = false;
-	bool seHit = false;
+	nwHit = false;
+	neHit = false;
+	swHit = false;
+	seHit = false;
 	
 	for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
 	{
-		nwHit = (*it)->hitTest(x + 2, y + 2, 8, 8) || nwHit;
-		neHit = (*it)->hitTest(x + 6, y + 2, 8, 8) || neHit;
-		swHit = (*it)->hitTest(x + 2, y + 6, 8, 8) || swHit;
-		seHit = (*it)->hitTest(x + 6, y + 6, 8, 8) || seHit;
+		nwHit = (*it)->hitTest(x + 1, y + 1, 8, 8) || nwHit;
+		neHit = (*it)->hitTest(x + 7, y + 1, 8, 8) || neHit;
+		swHit = (*it)->hitTest(x + 1, y + 7, 8, 8) || swHit;
+		seHit = (*it)->hitTest(x + 7, y + 7, 8, 8) || seHit;
 	}
 
 	if (log_xor(log_xor(neHit, nwHit), log_xor(seHit, swHit)))
@@ -115,6 +103,11 @@ void Player::update(Uint32 currTime)
 	if ( (neHit && seHit && !nwHit && !swHit) || (nwHit && swHit && !neHit && !seHit))
 	{
 		x -= xSpeed;
+	}
+	
+	if (seHit || swHit)
+	{
+		ySpeed = 0;
 	}
 }
 
