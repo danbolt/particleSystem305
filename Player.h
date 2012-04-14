@@ -38,6 +38,10 @@ class Player
 	       
 	       bool facingRight;
 
+	       bool knockedBack;
+	       GLfloat knockBackSpeed;
+	       GLfloat xDelta;
+
 	       vector<Particle*>* particleList;
 	       vector<Wall*>* wallList;
 	       vector<Fire*>* fireList;

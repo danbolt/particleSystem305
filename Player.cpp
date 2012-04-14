@@ -32,6 +32,10 @@ Player::Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, v
 	fireList = newFireList;
 	
 	facingRight = true;
+
+	knockedBack = false;
+	knockBackSpeed = 5;
+	xDelta = 16;
 }
 
 Player::~Player()
@@ -42,12 +46,12 @@ Player::~Player()
 
 void Player::update(Uint32 currTime)
 {
-	if (keys[SDLK_RIGHT])
+	if (keys[SDLK_RIGHT] && !knockedBack)
 	{
 		facingRight = true;
 		xSpeed = 2;
 	}
-	else if (keys[SDLK_LEFT])
+	else if (keys[SDLK_LEFT] && !knockedBack)
 	{
 		facingRight = false;
 		xSpeed = -2;
@@ -56,8 +60,25 @@ void Player::update(Uint32 currTime)
 	{
 		xSpeed = 0;
 	}
+
+	if (knockedBack)
+	{
+		if (fabs(x - xDelta) > 16)
+		{
+			knockedBack = false;
+		}
+
+		if (facingRight)
+		{
+			xSpeed -= knockBackSpeed;
+		}
+		else
+		{
+			xSpeed += knockBackSpeed;
+		}
+	}
 	
-	if (keys[SDLK_x] && (swHit || seHit))
+	if (!knockedBack && keys[SDLK_x] && (swHit || seHit))
 	{
 		ySpeed = -3;
 	}
@@ -83,12 +104,16 @@ void Player::update(Uint32 currTime)
 		seHit = (*it)->hitTest(x + 7, y + 7, 8, 8) || seHit;
 	}
 
-	for (std::vector<Fire*>::iterator it = fireList->begin(); it != fireList->end(); ++it)
+	if (!knockedBack)
 	{
-		nwHit = (*it)->hitTest(x + 1, y + 1, 8, 8) || nwHit;
-		neHit = (*it)->hitTest(x + 7, y + 1, 8, 8) || neHit;
-		swHit = (*it)->hitTest(x + 1, y + 7, 8, 8) || swHit;
-		seHit = (*it)->hitTest(x + 7, y + 7, 8, 8) || seHit;
+		for (std::vector<Fire*>::iterator it = fireList->begin(); it != fireList->end(); ++it)
+		{
+			if ((*it)->hitTest(x,y, 16, 16))
+			{
+				knockedBack = true;
+				xDelta = x;
+			}
+		}
 	}
 
 	if (log_xor(log_xor(neHit, nwHit), log_xor(seHit, swHit)))
