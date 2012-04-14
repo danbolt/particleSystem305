@@ -195,11 +195,6 @@ void loop()
 		{
 
 			keys = SDL_GetKeyState(NULL);
-			
-			{
-				SDL_GetMouseState(&mouseX, &mouseY);
-				particleList.push_back(new Raindrop(mouseX, mouseY, (rand() % 10) - 5, (rand() % 10) - 5));
-			}
 
 			updateLogic(currentTime);
 
@@ -220,34 +215,30 @@ int deinit()
 int main (int argc, char* argv[])
 {
 	init();
-	
-	pl = new Player(320, 140, &particleList, &wallList);
+
+	pl = new Player(120, 220, &particleList, &wallList);
 
 	testFire = new Fire(320, 340, &particleList);
 	triangleList.push_back(testFire);
 
-	for (int i = 0; i < 30*40; i++)
+	for (int i = 0; i < 40; i++)
 	{
-		if (rand() % 100 < 90)
+		if (i == 20 || i == 19)
 		{
 			continue;
 		}
 
-		testWall = new Wall((i % 40)*16, (i/30) * 16);
+		testWall = new Wall(i*16, 248);
 		wallList.push_back(testWall);
 		triangleList.push_back(&(testWall->upper));
 		triangleList.push_back(&(testWall->lower));
-	}
+		
+		testWall = new Wall(i*16, 200);
+		wallList.push_back(testWall);
+		triangleList.push_back(&(testWall->upper));
+		triangleList.push_back(&(testWall->lower));
 
-	/*Triangle* testTriangle = new Triangle();
-	testTriangle->p1.x = 100 ;
-	testTriangle->p1.y = 250 ;
-	testTriangle->p2.x = 100 ;
-	testTriangle->p2.y = 300 ;
-	testTriangle->p3.x = 200 ;
-	testTriangle->p3.y = 300 ;
-	testTriangle->visible = true;
-	triangleList.push_back(testTriangle);*/
+	}
 
 	loop();
 

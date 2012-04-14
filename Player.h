@@ -34,6 +34,8 @@ class Player
 	       bool neHit;
 	       bool swHit;
 	       bool seHit;
+	       
+	       bool facingRight;
 
 	       vector<Particle*>* particleList;
 	       vector<Wall*>* wallList;

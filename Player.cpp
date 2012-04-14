@@ -9,6 +9,7 @@
 
 #include "Globals.h"
 #include "Particle.h"
+#include "Raindrop.h"
 #include "Wall.h"
 #include "Player.h"
 
@@ -27,6 +28,8 @@ Player::Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, v
 	
 	particleList = newParticleList;
 	wallList = newWallList;
+	
+	facingRight = true;
 }
 
 Player::~Player()
@@ -39,10 +42,12 @@ void Player::update(Uint32 currTime)
 {
 	if (keys[SDLK_RIGHT])
 	{
+		facingRight = true;
 		xSpeed = 2;
 	}
 	else if (keys[SDLK_LEFT])
 	{
+		facingRight = false;
 		xSpeed = -2;
 	}
 	else
@@ -50,7 +55,7 @@ void Player::update(Uint32 currTime)
 		xSpeed = 0;
 	}
 	
-	if (keys[SDLK_SPACE] && (swHit || seHit))
+	if (keys[SDLK_x] && (swHit || seHit))
 	{
 		ySpeed = -3;
 	}
@@ -108,6 +113,22 @@ void Player::update(Uint32 currTime)
 	if (seHit || swHit)
 	{
 		ySpeed = 0;
+	}
+	else if (neHit || nwHit)
+	{
+		ySpeed = 0;
+	}
+	
+	if (keys[SDLK_c])
+	{
+		if (facingRight)
+		{
+			particleList->push_back(new Raindrop(x + 16, y + 8, (rand() % 20) + 30, (rand() % 10)));
+		}
+		else
+		{
+			particleList->push_back(new Raindrop(x, y + 8, -30 - (rand() % 20), (rand() % 10)));
+		}
 	}
 }
 
