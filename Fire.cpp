@@ -49,6 +49,12 @@ void Fire::update(Uint32 currTime)
 
 bool Fire::pointIntersect(Particle* p)
 {
+	if (life < 1)
+	{
+		return false;
+	}
+
+
 	//computes the point's barycentric coordinates of the triangle
 	GLfloat bary1 = ( (p2.y - p3.y)*(p->x - p3.x) + (p3.x - p2.x)*(p->y - p3.y) )/( (p2.y - p3.y)*(p1.x - p3.x) + (p3.x - p2.x)*(p1.y - p3.y) );
 	GLfloat bary2 = ( (p3.y - p1.y)*(p->x - p3.x) + (p1.x - p3.x)*(p->y - p3.y) )/( (p2.y - p3.y)*(p1.x - p3.x) + (p3.x - p2.x)*(p1.y - p3.y) );

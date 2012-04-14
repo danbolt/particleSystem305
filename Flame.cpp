@@ -46,13 +46,13 @@ Flame::~Flame()
 
 void Flame::specialUpdate(Uint32 currTime)
 {
-	if (velocity.length() < 1.0f || currTime - creationTime > 5000 - (Uint32)(100*fabs(velocity.x)))
+	if (velocity.length() < 1.0f || currTime - creationTime > 2500 - (Uint32)(100*fabs(velocity.x)))
 	{
 		dead = true;
 	}
 	else
 	{
-		g = (currTime - creationTime)/7000.0f;
+		g = (currTime - creationTime)/4000.0f;
 		if (g > 1.0f)
 		{
 			g = 1.0f;
