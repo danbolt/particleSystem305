@@ -36,7 +36,7 @@ void Fire::update(Uint32 currTime)
 {
 	if (visible && life > 0)
 	{
-		particleList->push_back(new Flame( p1.x, p1.y));
+		particleList->push_back(new Flame( p1.x, p1.y - 2));
 		particleList->push_back(new Flame( p2.x, p2.y - 5));
 		particleList->push_back(new Flame( p3.x + 1, p3.y - 5));
 	}

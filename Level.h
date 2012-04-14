@@ -22,7 +22,7 @@ using namespace std;
 class Level
 {
 	public:
-		Level(char* level[]);
+		Level(char level[15][20]);
 		~Level();
 
 		void update(Uint32 currTime);

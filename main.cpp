@@ -17,15 +17,16 @@
 #include "Fire.h"
 #include "Wall.h"
 #include "Player.h"
+#include "Level.h"
 
-char testLevel[15][20] = {
+char testTileMap[15][20] = {
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,1,0,2,0,0,1,0,0,0,0,0,0,0,0,0,0},
-{0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+{0,0,0,0,1,0,0,0,3,1,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -53,11 +54,7 @@ std::vector<Wall*> wallList;
 
 Player* pl;
 
-bool spaceDown = false;
-int addCount = 0;
-
-Fire* testFire;
-Wall* testWall;
+Level* testLevel;
 
 // initalization function for things like SDL and OpenGL
 int init()
@@ -71,8 +68,6 @@ int init()
 		return 0;
 	}
 	
-	freopen( "CON", "w", stdout );
-
 	if ((screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL)) == NULL)
 	{
 		perror("Error initalizing screen");
@@ -96,8 +91,7 @@ int init()
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
 
-	particleList.reserve(3000);
-	wallList.reserve(1200);
+	testLevel = new Level(testTileMap);
 
 	lastUpdate = SDL_GetTicks();
 
@@ -106,54 +100,7 @@ int init()
 
 void updateLogic(Uint32 currTime)
 {
-	pl->update(currTime);
-
-	testFire->update(currTime);
-
-	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
-	{
-		if ((*it)->dead)
-		{
-			delete (*it);
-			it = particleList.erase(it);
-		}
-		else
-		{
-			(*it)->update(currTime);
-			
-			for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
-			{
-				if ((*it2)->pointIntersect(*it))
-				{
-					(*it)->backstep(currTime);
-					
-					p_vector wallNormal(0,0);
-					(*it2)->getRelevantNormal((*it), wallNormal);
-					
-					(*it)->reflect(wallNormal);
-				}
-			}
-			
-			if ((*it)->x <= 0)
-			{
-				(*it)->backstep(currTime);
-					
-				p_vector wallNormal(1,0);
-
-				(*it)->reflect(wallNormal);
-			}
-			else if ((*it)->x >= SCREEN_WIDTH)
-			{
-				(*it)->backstep(currTime);
-					
-				p_vector wallNormal(-1,0);
-					
-				(*it)->reflect(wallNormal);
-			}
-			
-			++it;
-		}
-	}
+	testLevel->update(currTime);
 }
 
 void draw()
@@ -161,34 +108,7 @@ void draw()
 	glClearColor(0.0,0.0,0.0,1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glLoadIdentity();
-
-	for(std::vector<Wall*>::iterator it = wallList.begin(); it != wallList.end(); ++it)
-	{
-		(*it)->draw();
-	}
-
-	for(std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); ++it)
-	{
-		if ((*it)->dead)
-		{
-			continue;
-		}
-		glPushMatrix();
-		glTranslatef((*it)->x, (*it)->y, 0);
-		(*it)->draw();
-		glPopMatrix();
-	}
-
-	for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
-	{
-		if ((*it2)->visible)
-		{
-			(*it2)->draw();
-		}
-	}
-	
-	pl->draw();
+	testLevel->draw();
 
 	SDL_GL_SwapBuffers();
 }
@@ -234,34 +154,7 @@ int main (int argc, char* argv[])
 {
 	init();
 
-	pl = new Player(120, 220, &particleList, &wallList);
-
-	testFire = new Fire(320, 340, &particleList);
-	triangleList.push_back(testFire);
-
-	for (int i = 0; i < 40; i++)
-	{
-		if (i == 20 || i == 19)
-		{
-			continue;
-		}
-
-		testWall = new Wall(i*16, 248);
-		wallList.push_back(testWall);
-		triangleList.push_back(&(testWall->upper));
-		triangleList.push_back(&(testWall->lower));
-		
-		testWall = new Wall(i*16, 200);
-		wallList.push_back(testWall);
-		triangleList.push_back(&(testWall->upper));
-		triangleList.push_back(&(testWall->lower));
-
-	}
-
 	loop();
-
-	particleList.clear();
-	triangleList.clear();
 
 	deinit();
 	

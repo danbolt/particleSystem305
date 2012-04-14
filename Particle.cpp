@@ -35,8 +35,8 @@ Particle::Particle(GLfloat newX, GLfloat newY)
 	
 	type = NONE;
 
-	lastUpdateTime2 = SDL_GetTicks();
-	lastUpdateTime = SDL_GetTicks();
+	lastUpdateTime2 = 0;
+	lastUpdateTime = 0;
 }
 
 Particle::~Particle()
@@ -51,6 +51,13 @@ void Particle::specialUpdate(Uint32 currTime)
 
 void Particle::update(Uint32 currTime)
 {
+	// something's not working right with lastUpdateTime when constructed
+	// don't have time to figure it out
+	if (lastUpdateTime > 10000000 || lastUpdateTime == 0)
+	{
+		lastUpdateTime = currTime;
+	}
+
 	if (dead)
 	{
 		return;
@@ -58,28 +65,22 @@ void Particle::update(Uint32 currTime)
 	
 	specialUpdate(currTime);
 
-	GLfloat deltaTime = ((float)currTime - (float)lastUpdateTime)/1000.0;
-	
-	// if the particle has travelled a crazy amount of distance, something's wrong. for now delete it
+	GLfloat deltaTimeF = ((float)currTime - (float)lastUpdateTime)/1000.0;
+
+	// if the particle hasn't been updated for longer than one second, something's probably wrong
 	// might not be able to fix in time frame, but easy to cover up
-	GLfloat distance = sqrt( pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) + pow(((velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime), 2) );
-	if (distance > 5.0)
+	if (currTime - lastUpdateTime > 1000)
 	{
-		//printf("distance travelled: %f, deltatime: %f\n", distance, deltaTime);
 		dead = true;
 	}
 
-
 	// amy's reccomended Euler integration tricks
-	x += (velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime;
-	velocity.x += (acceleration.x)*deltaTime;
+	x += (velocity.x)*deltaTimeF + (acceleration.x)*0.5*deltaTimeF*deltaTimeF;
+	velocity.x += (acceleration.x)*deltaTimeF;
 
-	y += (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
-	velocity.y += (acceleration.y)*deltaTime;
+	y += (velocity.y)*deltaTimeF + (acceleration.y)*0.5*deltaTimeF*deltaTimeF;
+	velocity.y += (acceleration.y)*deltaTimeF;
 
-	lastUpdateTime2 = lastUpdateTime;
-	lastUpdateTime = currTime;
-	
 	if (x < -10)
 	{
 		dead = true;
@@ -96,18 +97,21 @@ void Particle::update(Uint32 currTime)
 	{
 		dead = true;
 	}
+
+	lastUpdateTime2 = lastUpdateTime;
+	lastUpdateTime = currTime;
 }
 
 void Particle::backstep(Uint32 currTime)
 {
-	GLfloat deltaTime = ((float)lastUpdateTime - (float)lastUpdateTime2)/1000.0;
+	GLfloat deltaTimeF = ((float)lastUpdateTime - (float)lastUpdateTime2)/1000.0;
 
 	// amy's reccomended Euler integration tricks
-	velocity.x -= (acceleration.x)*deltaTime;
-	x -= (velocity.x)*deltaTime + (acceleration.x)*0.5*deltaTime*deltaTime;
+	velocity.x -= (acceleration.x)*deltaTimeF;
+	x -= (velocity.x)*deltaTimeF + (acceleration.x)*0.5*deltaTimeF*deltaTimeF;
 
-        velocity.y -= (acceleration.y)*deltaTime;
-	y -= (velocity.y)*deltaTime + (acceleration.y)*0.5*deltaTime*deltaTime;
+        velocity.y -= (acceleration.y)*deltaTimeF;
+	y -= (velocity.y)*deltaTimeF + (acceleration.y)*0.5*deltaTimeF*deltaTimeF;
 }
 
 void Particle::reflect(p_vector& wallNormal)

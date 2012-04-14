@@ -16,7 +16,7 @@
 
 using namespace std;
 
-Level::Level(char* level[])
+Level::Level(char level[15][20])
 {
 	particleList.reserve(3000);
 	wallList.reserve(1200);
@@ -28,9 +28,9 @@ Level::Level(char* level[])
 	Fire* testFire;
 
 	//iterate through level and create data
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 20; i++)
 	{
-		for (int j = 0; j < 30; j++)
+		for (int j = 0; j < 15; j++)
 		{
 			switch (level[j][i])
 			{
@@ -63,8 +63,9 @@ Level::Level(char* level[])
 					}
 				break;
 				case 3:
-					testFire = new Fire((i * 32) + 16, (j * 32) + 18, & particleList);
+					testFire = new Fire((i * 32) + 16, (j * 32) + 18, &particleList);
 					triangleList.push_back(testFire);
+					fireList.push_back(testFire);
 				break;
 				case 4:
 					// enemy

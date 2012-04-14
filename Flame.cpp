@@ -37,6 +37,9 @@ Flame::Flame (GLfloat newX, GLfloat newY)
 	r = 1.0;
 	g = 0.0;
 	b = 0.0;
+
+	lastUpdateTime = 0;
+	lastUpdateTime2 = 0;
 }
 
 Flame::~Flame()
