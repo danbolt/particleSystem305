@@ -12,13 +12,14 @@
 #include "Raindrop.h"
 #include "Wall.h"
 #include "Player.h"
+#include "Fire.h"
 
 bool Player::log_xor(bool a, bool b)
 {
     return ( (a && !b) || (!a && b) );
 }
 
-Player::Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList)
+Player::Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, vector<Fire*>* newFireList)
 {
 	x = newX;
 	y = newY;
@@ -28,6 +29,7 @@ Player::Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, v
 	
 	particleList = newParticleList;
 	wallList = newWallList;
+	fireList = newFireList;
 	
 	facingRight = true;
 }
@@ -74,6 +76,14 @@ void Player::update(Uint32 currTime)
 	seHit = false;
 	
 	for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
+	{
+		nwHit = (*it)->hitTest(x + 1, y + 1, 8, 8) || nwHit;
+		neHit = (*it)->hitTest(x + 7, y + 1, 8, 8) || neHit;
+		swHit = (*it)->hitTest(x + 1, y + 7, 8, 8) || swHit;
+		seHit = (*it)->hitTest(x + 7, y + 7, 8, 8) || seHit;
+	}
+
+	for (std::vector<Fire*>::iterator it = fireList->begin(); it != fireList->end(); ++it)
 	{
 		nwHit = (*it)->hitTest(x + 1, y + 1, 8, 8) || nwHit;
 		neHit = (*it)->hitTest(x + 7, y + 1, 8, 8) || neHit;

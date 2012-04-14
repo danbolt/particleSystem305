@@ -59,11 +59,11 @@ Level::Level(char level[15][20])
 				case 2:
 					if (pl == NULL)
 					{
-						pl = new Player(32 * i, 32 * j, &particleList, &wallList);
+						pl = new Player(32 * i, 32 * j, &particleList, &wallList, &fireList);
 					}
 				break;
 				case 3:
-					testFire = new Fire((i * 32) + 16, (j * 32) + 18, &particleList);
+					testFire = new Fire((i * 32) + 16, (j * 32) + 22, &particleList, false);
 					triangleList.push_back(testFire);
 					fireList.push_back(testFire);
 				break;
@@ -76,7 +76,7 @@ Level::Level(char level[15][20])
 	
 	if (pl == NULL)
 	{
-		pl = new Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, &particleList, &wallList);
+		pl = new Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, &particleList, &wallList, &fireList);
 	}
 }
 

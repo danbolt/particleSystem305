@@ -11,7 +11,7 @@
 #include "Flame.h"
 #include "Fire.h"
 
-Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList)
+Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, bool hasFuse)
 {
 	p1.x = newX;
 	p1.y = newY - 15;
@@ -25,6 +25,13 @@ Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList)
 	visible = true;
 	
 	life = 100;
+
+	limited = hasFuse;
+	timeToLive = 5000;
+	creationTime = 0;
+
+	xSpeed = 0.0f;
+	ySpeed = 0.0f;
 }
 
 Fire::~Fire()
@@ -34,14 +41,31 @@ Fire::~Fire()
 
 void Fire::update(Uint32 currTime)
 {
-	if (visible && life > 0)
+	if (limited && creationTime == 0)
+	{
+		creationTime = currTime;
+	}
+	else if (limited && currTime - creationTime > timeToLive)
+	{
+		life = 0;
+	}
+
+	p1.x += xSpeed;
+	p1.y += ySpeed;
+	p2.x += xSpeed;
+	p2.y += ySpeed;
+	p3.x += xSpeed;
+	p3.y += ySpeed;
+
+
+	if (life > 0)
 	{
 		particleList->push_back(new Flame( p1.x, p1.y - 2));
 		particleList->push_back(new Flame( p2.x, p2.y - 5));
 		particleList->push_back(new Flame( p3.x + 1, p3.y - 5));
 	}
 
-	if (life < 1 && visible)
+	if (life < 1)
 	{
 		visible = false;
 	}
@@ -87,6 +111,23 @@ void Fire::draw()
 		glVertex2f(p2.x, p2.y);
 		glVertex2f(p3.x, p3.y);
 		glEnd();
+	}
+}
+
+bool Fire::hitTest(GLfloat oX, GLfloat oY, GLfloat oWidth, GLfloat oHeight)
+{
+	if (life < 1)
+	{
+		return false;
+	}
+
+	if (p2.x < oX + oWidth && p3.x > oX && p1.y < oY + oHeight && p3.y > oY)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

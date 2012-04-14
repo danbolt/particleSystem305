@@ -14,13 +14,14 @@
 
 #include "Particle.h"
 #include "Wall.h"
+#include "Fire.h"
 
 using namespace std;
 
 class Player
 {
 	public:
-	       Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList);
+	       Player(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, vector<Fire*>* newFireList);
 	       ~Player();
 
 	       void update(Uint32 currTime);
@@ -39,6 +40,7 @@ class Player
 
 	       vector<Particle*>* particleList;
 	       vector<Wall*>* wallList;
+	       vector<Fire*>* fireList;
 };
 
 #endif

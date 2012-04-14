@@ -20,15 +20,24 @@ using namespace std;
 class Fire : public Triangle
 {
 	public:
-	       Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList);
+	       Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, bool hasFuse);
 	       ~Fire();
 
 	       virtual void update(Uint32 currTime);
 	       virtual bool pointIntersect(Particle* p);
 
 	       virtual void draw();
-	       
+
+	       bool hitTest(GLfloat oX, GLfloat oY, GLfloat oWidth, GLfloat oHeight);
+
+	       GLfloat xSpeed;
+	       GLfloat ySpeed;
+
 	       int life; //between 0 and 100
+
+	       bool limited;
+	       Uint32 timeToLive;
+	       Uint32 creationTime;
 
 	       vector<Particle*>* particleList;
 };
