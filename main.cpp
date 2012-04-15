@@ -187,6 +187,12 @@ int main (int argc, char* argv[])
 {
 	init();
 
+	// print messages
+	printf("CSC 305 - Assignent #5\nDaniel Savage - V00701453\n");
+	printf("--- CONTROLS ---\n\tArrow keys -> Move\n\tX key -> jump\n\tC key -> spray water\n---   ---   ---\n");
+	printf("The orange squares will jump and \"try to\" shoot water at the player. Enough water will put everything out\n");
+	printf("See if you can douse everything on the screen!\n");
+
 	loop();
 
 	deinit();
