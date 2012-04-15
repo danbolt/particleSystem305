@@ -9,5 +9,8 @@ extern int SCREEN_HEIGHT;
 
 extern Uint8* keys;
 
+extern SDL_Surface* tiles;
+extern GLuint tilesTexture;
+
 #endif
 

@@ -25,7 +25,7 @@ char testTileMap[15][20] = {
 {0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,0,0,0,1,0},
 {0,0,0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,0,1,0},
 {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
-{0,0,0,0,1,2,0,0,0,0,1,1,1,1,0,0,4,0,1,0},
+{0,0,0,0,1,2,0,0,4,0,1,1,1,1,0,0,4,0,1,0},
 {0,0,0,0,1,0,0,3,0,1,1,0,0,1,1,0,0,0,1,0},
 {0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,0},
 {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -38,6 +38,9 @@ char testTileMap[15][20] = {
 };
 
 SDL_Surface* screen;
+
+SDL_Surface* tiles;
+GLuint tilesTexture;
 
 Uint8* keys;
 int mouseX = 0;
@@ -87,9 +90,22 @@ int init()
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
+	glEnable(GL_BLEND);
 	
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
 	glMatrixMode(GL_MODELVIEW);
+
+	tiles = SDL_LoadBMP("sprites.bmp");
+	
+	Uint32 colorkey = SDL_MapRGB( tiles->format, 0, 0, 0);
+	SDL_SetColorKey( tiles, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
+
+	glGenTextures(1, &tilesTexture);
+	glBindTexture(GL_TEXTURE_2D, tilesTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, tiles->pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	SDL_FreeSurface(tiles);
 
 	testLevel = new Level(testTileMap);
 

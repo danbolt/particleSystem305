@@ -170,11 +170,21 @@ void Player::update(Uint32 currTime)
 
 void Player::draw()
 {
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, tilesTexture);
+
 	glBegin(GL_QUADS);
-	glColor3f(1.0, 1.0, 1.0);
+	//glColor3f(1.0, 1.0, 1.0);
+	glTexCoord2f(0, 0);
 	glVertex2f(x, y);
+	glTexCoord2f(0.25, 0);
 	glVertex2f(x + 16, y);
+	glTexCoord2f(0.25, 0.25);
 	glVertex2f(x + 16, y + 16);
+	glTexCoord2f(0, 0.25);
 	glVertex2f(x, y + 16);
 	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
 }

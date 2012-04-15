@@ -14,13 +14,14 @@
 #include "vector.h"
 #include "Triangle.h"
 #include "Particle.h"
+#include "Wall.h"
 
 using namespace std;
 
 class Fire : public Triangle
 {
 	public:
-	       Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, bool hasFuse);
+	       Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, bool hasFuse);
 	       ~Fire();
 
 	       virtual void update(Uint32 currTime);
@@ -40,6 +41,7 @@ class Fire : public Triangle
 	       Uint32 creationTime;
 
 	       vector<Particle*>* particleList;
+	       vector<Wall*>* wallList;
 };
 
 #endif

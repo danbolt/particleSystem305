@@ -9,7 +9,9 @@
 #include "Globals.h"
 
 #include "Particle.h"
+#include "Triangle.h"
 #include "Flame.h"
+#include "Fire.h"
 #include "Wall.h"
 #include "Enemy.h"
 
@@ -20,7 +22,7 @@ bool Enemy::log_xor(bool a, bool b)
     return ( (a && !b) || (!a && b) );
 }
 
-Enemy::Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList)
+Enemy::Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, vector<Fire*>* newFireList, vector<Triangle*>* newTriangleList)
 {
 	x = newX;
 	y = newY;
@@ -30,8 +32,12 @@ Enemy::Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vec
 
 	life = 100;
 
+	facingRight = true;
+
 	wallList = newWallList;
 	particleList = newParticleList;
+	fireList = newFireList;
+	triangleList = newTriangleList;
 
 	nwHit = false;
 	neHit = false;
@@ -39,6 +45,10 @@ Enemy::Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vec
 	seHit = false;
 
 	jumpTimer = 0;
+	jumpOffset = (rand() % 2000) + 2000;
+
+	shootTimer = 0;
+	shootOffset = (rand() % 1000) + 3000;
 }
 
 Enemy::~Enemy()
@@ -52,11 +62,15 @@ void Enemy::update(Uint32 currTime)
 	{
 		jumpTimer = currTime;
 	}
+	if (shootTimer == 0)
+	{
+		shootTimer = currTime;
+	}
 
 	//loop through particles and subtract life for water
 	for (std::vector<Particle*>::iterator it = particleList->begin(); it != particleList->end(); ++it)
 	{
-		if (hitTest((*it)->x, (*it)->y, 2, 2))
+		if ((*it)->type == RAINDROP && hitTest((*it)->x, (*it)->y, 2, 2))
 		{
 			life--;
 			(*it)->dead = true;
@@ -72,10 +86,40 @@ void Enemy::update(Uint32 currTime)
 		}
 	}
 
-	if (currTime - jumpTimer > 5000)
+	if ((seHit || swHit) && currTime - jumpTimer > jumpOffset)
 	{
 		ySpeed = -4;
 		jumpTimer = currTime;
+	}
+
+	if (currTime - shootTimer > shootOffset)
+	{
+		Fire* shot = new Fire(x, y, particleList, wallList, true);
+		if (facingRight)
+		{
+			shot->xSpeed = 4.6;
+			shot->timeToLive = 1050;
+			shot->life = 20;
+
+			shot->p1.y += 14;
+			shot->p2.x += 5;
+			shot->p3.x -= 5;
+		}
+		else
+		{
+			shot->xSpeed = -4.6;
+			shot->timeToLive = 1050;
+			shot->life = 20;
+
+			shot->p1.y += 14;
+			shot->p2.x += 5;
+			shot->p3.x -= 5;
+		}
+		
+		fireList->push_back(shot);
+		triangleList->push_back(shot);
+
+		shootTimer = currTime;
 	}
 
 	//speed settings

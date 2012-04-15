@@ -8,10 +8,11 @@
 
 #include "vector.h"
 #include "Particle.h"
+#include "Wall.h"
 #include "Flame.h"
 #include "Fire.h"
 
-Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, bool hasFuse)
+Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, bool hasFuse)
 {
 	p1.x = newX;
 	p1.y = newY - 15;
@@ -21,7 +22,8 @@ Fire::Fire(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, bool 
 	p3.y = newY + 10;
 
 	particleList = newParticleList;
-	
+	wallList = newWallList;
+
 	visible = true;
 	
 	life = 100;
@@ -50,13 +52,28 @@ void Fire::update(Uint32 currTime)
 		life = 0;
 	}
 
+	for (std::vector<Wall*>::iterator it = wallList->begin(); it != wallList->end(); ++it)
+	{
+		if (hitTest((*it)->x, (*it)->y, 16, 16))
+		{
+			life = 0;
+		}
+	}
+
+	if (life < 1 && visible)
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			particleList->push_back(new Flame(p1.x, p1.y + 3));
+		}
+	}
+
 	p1.x += xSpeed;
 	p1.y += ySpeed;
 	p2.x += xSpeed;
 	p2.y += ySpeed;
 	p3.x += xSpeed;
 	p3.y += ySpeed;
-
 
 	if (life > 0)
 	{

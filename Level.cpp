@@ -66,12 +66,12 @@ Level::Level(char level[15][20])
 					}
 				break;
 				case 3:
-					testFire = new Fire((i * 32) + 16, (j * 32) + 22, &particleList, false);
+					testFire = new Fire((i * 32) + 16, (j * 32) + 22, &particleList, &wallList, false);
 					triangleList.push_back(testFire);
 					fireList.push_back(testFire);
 				break;
 				case 4:
-					testEnemy = new Enemy(i* 32, j * 32 + 16, &particleList, &wallList);
+					testEnemy = new Enemy(i* 32, j * 32 + 16, &particleList, &wallList, &fireList, &triangleList);
 					enemyList.push_back(testEnemy);
 				break;
 			}
@@ -101,7 +101,25 @@ void Level::update(Uint32 currTime)
 
 	for (vector<Fire*>::iterator it = fireList.begin(); it != fireList.end(); ++it)
 	{
-		(*it)->update(currTime);
+		if ((*it)->life < 1)
+		{
+			for(std::vector<Triangle*>::iterator it2 = triangleList.begin(); it2 != triangleList.end(); ++it2)
+			{
+				if ((*it2) == (*it))
+				{
+					it2 = triangleList.erase(it2);
+					it2--;
+				}
+			}
+
+			delete (*it);
+			it = fireList.erase(it);
+			it--;
+		}
+		else
+		{
+			(*it)->update(currTime);
+		}
 	}
 
 	for (vector<Enemy*>::iterator it = enemyList.begin(); it != enemyList.end(); ++it)
@@ -168,6 +186,8 @@ void Level::draw()
 {
 	glLoadIdentity();
 
+	pl->draw();
+
 	for(std::vector<Wall*>::iterator it = wallList.begin(); it != wallList.end(); ++it)
 	{
 		(*it)->draw();
@@ -197,8 +217,5 @@ void Level::draw()
 			(*it2)->draw();
 		}
 	}
-	
-	pl->draw();
-
 }
 

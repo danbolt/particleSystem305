@@ -13,13 +13,15 @@
 
 #include "Particle.h"
 #include "Wall.h"
+#include "Fire.h"
+#include "Triangle.h"
 
 using namespace std;
 
 class Enemy
 {
 	public:
-	       Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList);
+	       Enemy(GLfloat newX, GLfloat newY, vector<Particle*>* newParticleList, vector<Wall*>* newWallList, vector<Fire*>* newFireList, vector<Triangle*>* newTriangleList);
 	       ~Enemy();
 
 	       void update(Uint32 currTime);
@@ -41,9 +43,15 @@ class Enemy
 	       int life;
 
 	       Uint32 jumpTimer;
+	       Uint32 jumpOffset;
+
+	       Uint32 shootTimer;
+	       Uint32 shootOffset;
 
 	       vector<Particle*>* particleList;
 	       vector<Wall*>* wallList;
+	       vector<Fire*>* fireList;
+	       vector<Triangle*>* triangleList;
 };
 
 #endif
