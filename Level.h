@@ -16,6 +16,7 @@
 #include "Fire.h"
 #include "Player.h"
 #include "Wall.h"
+#include "Enemy.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ class Level
 		vector<Triangle*> triangleList;
 		vector<Fire*> fireList;
 		vector<Wall*> wallList;
+		vector<Enemy*> enemyList;
 		Player* pl;
 
 };

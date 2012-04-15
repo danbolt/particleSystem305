@@ -19,7 +19,7 @@ Flame::Flame (GLfloat newX, GLfloat newY)
 	y = newY;
 	
 	velocity.x = (rand() % 12) - 6;
-	velocity.y = -5.0f;
+	velocity.y = -5.0f + (rand() % 7) - 3.5;
 	
 	acceleration.x = 0.0f;
 	acceleration.y = -9.8f;

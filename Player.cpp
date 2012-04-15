@@ -110,6 +110,7 @@ void Player::update(Uint32 currTime)
 		{
 			if ((*it)->hitTest(x,y, 16, 16))
 			{
+				(*it)->life -= 30;
 				knockedBack = true;
 				xDelta = x;
 			}

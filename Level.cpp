@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Wall.h"
 #include "Level.h"
+#include "Enemy.h"
 
 using namespace std;
 
@@ -21,11 +22,13 @@ Level::Level(char level[15][20])
 	particleList.reserve(3000);
 	wallList.reserve(1200);
 	triangleList.reserve(2400);
+	enemyList.reserve(30);
 
 	pl = NULL;
 
 	Wall* testWall;
 	Fire* testFire;
+	Enemy* testEnemy;
 
 	//iterate through level and create data
 	for (int i = 0; i < 20; i++)
@@ -68,7 +71,8 @@ Level::Level(char level[15][20])
 					fireList.push_back(testFire);
 				break;
 				case 4:
-					// enemy
+					testEnemy = new Enemy(i* 32, j * 32 + 16, &particleList, &wallList);
+					enemyList.push_back(testEnemy);
 				break;
 			}
 		}
@@ -86,6 +90,7 @@ Level::~Level()
 	triangleList.clear();
 	fireList.clear();
 	wallList.clear();
+	enemyList.clear();
 
 	delete pl;
 }
@@ -99,6 +104,19 @@ void Level::update(Uint32 currTime)
 		(*it)->update(currTime);
 	}
 
+	for (vector<Enemy*>::iterator it = enemyList.begin(); it != enemyList.end(); ++it)
+	{
+		if ((*it)->life < 1)
+		{
+			delete (*it);
+			it = enemyList.erase(it);
+			it--;
+		}
+		else
+		{
+			(*it)->update(currTime);
+		}
+	}
 
 	for (std::vector<Particle*>::iterator it = particleList.begin(); it != particleList.end(); )
 	{
@@ -151,6 +169,11 @@ void Level::draw()
 	glLoadIdentity();
 
 	for(std::vector<Wall*>::iterator it = wallList.begin(); it != wallList.end(); ++it)
+	{
+		(*it)->draw();
+	}
+
+	for (vector<Enemy*>::iterator it = enemyList.begin(); it != enemyList.end(); ++it)
 	{
 		(*it)->draw();
 	}
