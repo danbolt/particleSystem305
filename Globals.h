@@ -12,5 +12,7 @@ extern Uint8* keys;
 extern SDL_Surface* tiles;
 extern GLuint tilesTexture;
 
+extern GLfloat playerX;
+
 #endif
 

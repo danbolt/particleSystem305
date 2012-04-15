@@ -17,7 +17,7 @@
 
 using namespace std;
 
-Level::Level(char level[15][20])
+Level::Level(char level[30][40])
 {
 	particleList.reserve(3000);
 	wallList.reserve(1200);
@@ -31,47 +31,31 @@ Level::Level(char level[15][20])
 	Enemy* testEnemy;
 
 	//iterate through level and create data
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 40; i++)
 	{
-		for (int j = 0; j < 15; j++)
+		for (int j = 0; j < 30; j++)
 		{
 			switch (level[j][i])
 			{
 				case 1:
-					testWall = new Wall(i * 32, j * 32);
+					testWall = new Wall(i * 16, j * 16);
 					wallList.push_back(testWall);
 					triangleList.push_back(&(testWall->upper));
 					triangleList.push_back(&(testWall->upper));
-					
-					testWall = new Wall((i * 32) + 16, j * 32);
-					wallList.push_back(testWall);
-					triangleList.push_back(&(testWall->upper));
-					triangleList.push_back(&(testWall->upper));
-
-					testWall = new Wall(i * 32, (j * 32) + 16);
-					wallList.push_back(testWall);
-					triangleList.push_back(&(testWall->upper));
-					triangleList.push_back(&(testWall->upper));
-
-					testWall = new Wall((i * 32) + 16, (j * 32) + 16);
-					wallList.push_back(testWall);
-					triangleList.push_back(&(testWall->upper));
-					triangleList.push_back(&(testWall->upper));
-
 				break;
 				case 2:
 					if (pl == NULL)
 					{
-						pl = new Player(32 * i, 32 * j, &particleList, &wallList, &fireList);
+						pl = new Player(i * 16, j * 16, &particleList, &wallList, &fireList);
 					}
 				break;
 				case 3:
-					testFire = new Fire((i * 32) + 16, (j * 32) + 22, &particleList, &wallList, false);
+					testFire = new Fire(i * + 16, (j * 16) + 4, &particleList, &wallList, false);
 					triangleList.push_back(testFire);
 					fireList.push_back(testFire);
 				break;
 				case 4:
-					testEnemy = new Enemy(i* 32, j * 32 + 16, &particleList, &wallList, &fireList, &triangleList);
+					testEnemy = new Enemy(i* 16, j * 16, &particleList, &wallList, &fireList, &triangleList);
 					enemyList.push_back(testEnemy);
 				break;
 			}

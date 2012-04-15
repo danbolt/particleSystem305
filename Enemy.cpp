@@ -7,7 +7,6 @@
 #include "SDL/SDL.h"
 
 #include "Globals.h"
-
 #include "Particle.h"
 #include "Triangle.h"
 #include "Flame.h"
@@ -67,15 +66,32 @@ void Enemy::update(Uint32 currTime)
 		shootTimer = currTime;
 	}
 
+	if (x < playerX)
+	{
+		facingRight = true;
+	}
+	else
+	{
+		facingRight = false;
+	}
+
+	int flamesToAdd = 0;
+
 	//loop through particles and subtract life for water
 	for (std::vector<Particle*>::iterator it = particleList->begin(); it != particleList->end(); ++it)
 	{
 		if ((*it)->type == RAINDROP && hitTest((*it)->x, (*it)->y, 2, 2))
 		{
 			life--;
+			flamesToAdd++;
 			(*it)->dead = true;
 		}
 
+	}
+
+	for (int i = 0; i < flamesToAdd; i++)
+	{
+		particleList->push_back(new Flame(x + (rand() % 16), y));
 	}
 
 	if (life < 1)

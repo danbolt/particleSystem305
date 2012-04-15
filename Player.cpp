@@ -63,7 +63,7 @@ void Player::update(Uint32 currTime)
 
 	if (knockedBack)
 	{
-		if (fabs(x - xDelta) > 16)
+		if (fabs(x - xDelta) > 16 || log_xor(nwHit, neHit))
 		{
 			knockedBack = false;
 		}
@@ -74,7 +74,7 @@ void Player::update(Uint32 currTime)
 		}
 		else
 		{
-			xSpeed += knockBackSpeed;
+			xSpeed = knockBackSpeed;
 		}
 	}
 	
@@ -166,16 +166,18 @@ void Player::update(Uint32 currTime)
 			particleList->push_back(new Raindrop(x, y + 8, -30 - (rand() % 20), (rand() % 10)));
 		}
 	}
+
+	playerX = x;
 }
 
 void Player::draw()
 {
-	glEnable(GL_TEXTURE_2D);
+	/*glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, tilesTexture);
 
 	glBegin(GL_QUADS);
-	//glColor3f(1.0, 1.0, 1.0);
+	glColor3f(1.0, 1.0, 1.0);
 	glTexCoord2f(0, 0);
 	glVertex2f(x, y);
 	glTexCoord2f(0.25, 0);
@@ -186,5 +188,25 @@ void Player::draw()
 	glVertex2f(x, y + 16);
 	glEnd();
 
-	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D); */
+
+
+	if (facingRight)
+	{
+		glBegin(GL_TRIANGLES);
+		glColor3f(0.1, 0.3, 1.0);
+		glVertex2f(x, y);
+		glVertex2f(x + 16, y + 8);
+		glVertex2f(x, y + 16);
+		glEnd();
+	}
+	else
+	{
+		glBegin(GL_TRIANGLES);
+		glColor3f(0.1, 0.3, 1.0);
+		glVertex2f(x + 16, y);
+		glVertex2f(x, y + 8);
+		glVertex2f(x + 16, y + 16);
+		glEnd();
+	}
 }
