@@ -5,6 +5,7 @@
 #include <GL/gl.h>
 #include <SDL/SDL.h>
 
+#include "Globals.h"
 #include "vector.h"
 #include "Triangle.h"
 #include "Wall.h"
@@ -50,11 +51,26 @@ bool Wall::hitTest(GLfloat oX, GLfloat oY, GLfloat oWidth, GLfloat oHeight)
 
 void Wall::draw()
 {
+	/*
 	glBegin(GL_QUADS);
 	glColor3f(0.0, 0.5, 0.0);
 	glVertex2f(x, y);
         glVertex2f(x + 16, y);
         glVertex2f(x + 16, y + 16);
         glVertex2f(x, y + 16);
+	glEnd(); */
+
+	//glBindTexture(GL_TEXTURE_2D, tilesTexture);
+	glBegin(GL_QUADS);
+	glColor3f(1.0, 1.0, 1.0);
+	glTexCoord2f(0.25, 0.25);
+	glVertex2f(x, y);
+	glTexCoord2f(0.50, 0.25);
+	glVertex2f(x + 16, y);
+	glTexCoord2f(0.50, 0.50);
+	glVertex2f(x + 16, y + 16);
+	glTexCoord2f(0.25, 0.50);
+	glVertex2f(x, y + 16);
 	glEnd();
+
 }

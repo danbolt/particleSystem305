@@ -172,25 +172,27 @@ void Player::update(Uint32 currTime)
 
 void Player::draw()
 {
-	/*glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 
-	glBindTexture(GL_TEXTURE_2D, tilesTexture);
-
+	//glBindTexture(GL_TEXTURE_2D, tilesTexture);
+	glPushMatrix();
+	glTranslatef(x, y, 0);
 	glBegin(GL_QUADS);
 	glColor3f(1.0, 1.0, 1.0);
 	glTexCoord2f(0, 0);
-	glVertex2f(x, y);
+	glVertex2f(0, 0);
 	glTexCoord2f(0.25, 0);
-	glVertex2f(x + 16, y);
+	glVertex2f(16, 0);
 	glTexCoord2f(0.25, 0.25);
-	glVertex2f(x + 16, y + 16);
+	glVertex2f(16, 16);
 	glTexCoord2f(0, 0.25);
-	glVertex2f(x, y + 16);
+	glVertex2f(0, 16);
 	glEnd();
+	glPopMatrix();
 
-	glDisable(GL_TEXTURE_2D); */
+	//glDisable(GL_TEXTURE_2D);
 
-
+	/*
 	if (facingRight)
 	{
 		glBegin(GL_TRIANGLES);
@@ -208,5 +210,5 @@ void Player::draw()
 		glVertex2f(x, y + 8);
 		glVertex2f(x + 16, y + 16);
 		glEnd();
-	}
+	}*/
 }

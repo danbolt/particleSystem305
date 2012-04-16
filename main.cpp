@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <GL/glu.h>
 #include <GL/gl.h>
 
@@ -97,32 +98,37 @@ int init()
 	srand( time(NULL) );
 
 	SDL_WM_SetCaption("Particle System", NULL);
+
+	tiles = IMG_Load("sprites.png");
 	
+	SDL_SetAlpha(tiles, 0, 0);
+
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
+	glMatrixMode(GL_MODELVIEW);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_BLEND);
-	
-	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, -1);
-	glMatrixMode(GL_MODELVIEW);
 
-	/*tiles = SDL_LoadBMP("sprites.bmp");
-	
-	Uint32 colorkey = SDL_MapRGB( tiles->format, 255, 255, 255);
-	SDL_SetColorKey( tiles, SDL_RLEACCEL | SDL_SRCCOLORKEY, colorkey);
+	glEnable(GL_TEXTURE_2D);
 
+	glAlphaFunc(GL_GREATER, 0.1f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);	
 	glGenTextures(1, &tilesTexture);
 	glBindTexture(GL_TEXTURE_2D, tilesTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, 3, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, tiles->pixels);
+
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	SDL_FreeSurface(tiles); */
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 64, 64, 0, GL_RGBA, GL_UNSIGNED_BYTE, tiles->pixels);
+	SDL_FreeSurface(tiles); 
 
 	testLevel = new Level(testTileMap);
 
@@ -186,12 +192,6 @@ int deinit()
 int main (int argc, char* argv[])
 {
 	init();
-
-	// print messages
-	printf("CSC 305 - Assignent #5\nDaniel Savage - V00701453\n");
-	printf("--- CONTROLS ---\n\tArrow keys -> Move\n\tX key -> jump\n\tC key -> spray water\n---   ---   ---\n");
-	printf("The orange squares will jump and \"try to\" shoot water at the player. Enough water will put everything out\n");
-	printf("See if you can douse everything on the screen!\n");
 
 	loop();
 

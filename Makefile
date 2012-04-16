@@ -1,7 +1,7 @@
 all: compileLinux
 
 compileLinux: main.o p_vector.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o Wall.o Player.o Level.o Enemy.o
-	g++ -pg -Wall vector.o main.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o Wall.o Player.o Level.o Enemy.o -o particle -lSDL -lGL -lGLU
+	g++ -pg -Wall vector.o main.o Particle.o Triangle.o Raindrop.o Flame.o Fire.o Wall.o Player.o Level.o Enemy.o -o particle -lSDL -lSDL_image -lGL -lGLU
 
 main.o:
 	g++ -pg -Wall -c main.cpp
